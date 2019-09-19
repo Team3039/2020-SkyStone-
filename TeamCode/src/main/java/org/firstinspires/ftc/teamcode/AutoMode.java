@@ -92,7 +92,7 @@ public class BasicOpMode_Linear extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
-
+        //Add game-specific stuff here
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
@@ -115,5 +115,6 @@ public class BasicOpMode_Linear extends LinearOpMode {
             leftBackDrive.setPower (-power);
             rightBackDrive.setPower (power);
         }
-    }
+
+        }
 }

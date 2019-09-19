@@ -61,17 +61,27 @@ public class TeleOpMode extends OpMode {
     private DcMotor leftBackDrive= null;
     private DcMotor rightBackDrive = null;
 
+    private DcMotor elevator = null;
+
     /*
      * Code to run ONCE when the driver hits INIT
      */
     @Override
     public void init() {
+
+        leftFrontDrive = hardwareMap.get(DcMotor.class, "leftFrontMotor");
+        rightFrontDrive = hardwareMap.get(DcMotor.class, "rightFrontMotor");
+        leftBackDrive = hardwareMap.get(DcMotor.class, "leftRearMotor");
+        rightBackDrive = hardwareMap.get(DcMotor.class, "rightRearMotor");
+        elevator = hardwareMap.get (DcMotor.class, "elevator") ;
+
         //telemetry and hardwareMap stuff goes in this method.
 
         leftFrontDrive.setDirection(DcMotor.Direction.FORWARD);
         rightFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         leftBackDrive.setDirection(DcMotor.Direction.FORWARD);
         rightBackDrive.setDirection(DcMotor.Direction.REVERSE);
+        elevator.setDirection(DcMotor.Direction.REVERSE);
 
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
@@ -82,7 +92,9 @@ public class TeleOpMode extends OpMode {
      */
     @Override
     public void init_loop() {
-
+        public void raiseElevator (double power) {
+            elevator.setPower(bleh);
+        }
     }
 
     /*
