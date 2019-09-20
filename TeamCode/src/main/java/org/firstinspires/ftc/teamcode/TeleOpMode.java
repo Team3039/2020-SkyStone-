@@ -93,7 +93,7 @@ public class TeleOpMode extends OpMode {
     @Override
     public void init_loop() {
         public void raiseElevator (double power) {
-            elevator.setPower(bleh);
+            elevator.setPower(power);
         }
     }
 
