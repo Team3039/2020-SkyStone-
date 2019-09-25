@@ -13,27 +13,17 @@ public class TeleOpMode extends OpMode {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
 
-    private DcMotor leftFrontDrive = null;
-    private DcMotor rightFrontDrive = null;
-    private DcMotor leftBackDrive= null;
-    private DcMotor rightBackDrive = null;
+    private DcMotor leftFrontDrive = hardwareMap.get(DcMotor.class, "leftFrontMotor");
+    private DcMotor rightFrontDrive = hardwareMap.get(DcMotor.class, "rightFrontMotor");
+    private DcMotor leftBackDrive= hardwareMap.get(DcMotor.class, "leftRearMotor");
+    private DcMotor rightBackDrive = hardwareMap.get(DcMotor.class, "rightRearMotor");
 
-<<<<<<< HEAD
-=======
-    private DcMotor elevator = null;
+    private DcMotor elevator = hardwareMap.get (DcMotor.class, "elevator") ;
 
-    /*
-     * Code to run ONCE when the driver hits INIT
-     */
->>>>>>> 82fe41a6fa4b9f1dd2c94b76bb7f11cbbdce6b6c
     @Override
     public void init() {
 
-        leftFrontDrive = hardwareMap.get(DcMotor.class, "leftFrontMotor");
-        rightFrontDrive = hardwareMap.get(DcMotor.class, "rightFrontMotor");
-        leftBackDrive = hardwareMap.get(DcMotor.class, "leftRearMotor");
-        rightBackDrive = hardwareMap.get(DcMotor.class, "rightRearMotor");
-        elevator = hardwareMap.get (DcMotor.class, "elevator") ;
+
 
         //telemetry and hardwareMap stuff goes in this method.
 
@@ -49,9 +39,7 @@ public class TeleOpMode extends OpMode {
 
     @Override
     public void init_loop() {
-        public void raiseElevator (double power) {
-            elevator.setPower(power);
-        }
+
     }
     @Override
     public void start() {
