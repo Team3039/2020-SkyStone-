@@ -72,7 +72,7 @@ public class TeleOpMode extends OpMode {
 
 
 
-       /* if (gamepad1.left_bumper) {
+       if (gamepad1.left_bumper) {
             strafeLeft();
             //Press left bumper to strafe left
         }
@@ -80,7 +80,7 @@ public class TeleOpMode extends OpMode {
             strafeRight();
             //Press right bumper to strafe right
         }
-        else {*/
+        else {
             leftFrontPower = Range.clip(drive + turn, -.95, .95);
             rightFrontPower = Range.clip(drive - turn, -.95, .95);
             leftBackPower = Range.clip(drive + turn, -.95, .95);
@@ -89,7 +89,7 @@ public class TeleOpMode extends OpMode {
             rightFrontDrive.setPower(rightFrontPower);
             leftBackDrive.setPower(leftBackPower);
             rightBackDrive.setPower(rightBackPower);
-        //}
+        
 
     }
 
