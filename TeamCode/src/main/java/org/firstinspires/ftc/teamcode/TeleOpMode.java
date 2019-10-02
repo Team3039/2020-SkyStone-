@@ -13,16 +13,25 @@ public class TeleOpMode extends OpMode {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
 
-    private DcMotor leftFrontDrive = hardwareMap.get(DcMotor.class, "leftFrontMotor");
-    private DcMotor rightFrontDrive = hardwareMap.get(DcMotor.class, "rightFrontMotor");
-    private DcMotor leftBackDrive= hardwareMap.get(DcMotor.class, "leftRearMotor");
-    private DcMotor rightBackDrive = hardwareMap.get(DcMotor.class, "rightRearMotor");
+    private DcMotor leftFrontDrive = hardwareMap.get(DcMotor.class, "left_front_drive");
+    private DcMotor rightFrontDrive = hardwareMap.get(DcMotor.class, "right_front_drive);
+    private DcMotor leftBackDrive= hardwareMap.get(DcMotor.class, "left_back_drive");
+    private DcMotor rightBackDrive = rightBackDrive = hardwareMap.get(DcMotor.class, "right_back_drive");
+    //private DcMotor elevator = hardwareMap.get (DcMotor.class, "elevator") ;
 
-    private DcMotor elevator = hardwareMap.get (DcMotor.class, "elevator") ;
-    //hi how are you
+
+
+
+    /*
+     * Code to run ONCE when the driver hits INIT
+     */
 
     @Override
     public void init() {
+
+
+
+
 
 
 
@@ -36,11 +45,14 @@ public class TeleOpMode extends OpMode {
 
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
+        telemetry.update();
     }
 
     @Override
     public void init_loop() {
-
+        //public void raiseElevator (double power) {
+        //   elevator.setPower(power);
+        //}
     }
     @Override
     public void start() {
@@ -49,6 +61,36 @@ public class TeleOpMode extends OpMode {
 
     @Override
     public void loop() {
+        //Driving
+        double leftFrontPower;
+        double rightFrontPower;
+        double leftBackPower;
+        double rightBackPower;
+
+        double drive = gamepad1.left_stick_y;
+        double turn = -gamepad1.right_stick_x*.85 ;
+
+
+
+       /* if (gamepad1.left_bumper) {
+            strafeLeft();
+            //Press left bumper to strafe left
+        }
+        else if (gamepad1.right_bumper) {
+            strafeRight();
+            //Press right bumper to strafe right
+        }
+        else {*/
+            leftFrontPower = Range.clip(drive + turn, -.95, .95);
+            rightFrontPower = Range.clip(drive - turn, -.95, .95);
+            leftBackPower = Range.clip(drive + turn, -.95, .95);
+            rightBackPower = Range.clip(drive - turn, -.95, .95);
+            leftFrontDrive.setPower(leftFrontPower);
+            rightFrontDrive.setPower(rightFrontPower);
+            leftBackDrive.setPower(leftBackPower);
+            rightBackDrive.setPower(rightBackPower);
+        //}
+
     }
 
     @Override
