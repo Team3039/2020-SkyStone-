@@ -28,13 +28,6 @@ public class TeleOpMode extends OpMode {
 
     @Override
     public void init() {
-
-
-
-
-
-
-
         //telemetry and hardwareMap stuff goes in this method.
 
         leftFrontDrive.setDirection(DcMotor.Direction.FORWARD);
@@ -72,26 +65,23 @@ public class TeleOpMode extends OpMode {
 
 
 
-       /* if (gamepad1.left_bumper) {
-            strafeLeft();
+       if (gamepad1.left_bumper) {
+//            strafeLeft();
             //Press left bumper to strafe left
         }
         else if (gamepad1.right_bumper) {
-            strafeRight();
+//            strafeRight();
             //Press right bumper to strafe right
         }
-        else {*/
-           /*leftFrontPower = Range.clip(drive + turn, -.95, .95);
-            rightFrontPower = Range.clip(drive - turn, -.95, .95);
-            leftBackPower = Range.clip(drive + turn, -.95, .95);
-            rightBackPower = Range.clip(drive - turn, -.95, .95);
-            leftFrontDrive.setPower(leftFrontPower);
-            rightFrontDrive.setPower(rightFrontPower);
-            leftBackDrive.setPower(leftBackPower);
-            rightBackDrive.setPower(rightBackPower);
-            */
-        //}
-
+        else {
+//            rightFrontPower = Range.clip(drive - turn, -.95, .95);
+//            leftBackPower = Range.clip(drive + turn, -.95, .95);
+//            rightBackPower = Range.clip(drive - turn, -.95, .95);
+//            leftFrontDrive.setPower(leftFrontPower);
+//            rightFrontDrive.setPower(rightFrontPower);
+//            leftBackDrive.setPower(leftBackPower);
+//            rightBackDrive.setPower(rightBackPower);
+        }
     }
 
     @Override
