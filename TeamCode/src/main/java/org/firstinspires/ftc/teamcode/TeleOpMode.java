@@ -14,10 +14,10 @@ public class TeleOpMode extends OpMode {
     private ElapsedTime runtime = new ElapsedTime();
 
     private DcMotor leftFrontDrive = hardwareMap.get(DcMotor.class, "left_front_drive");
-    private DcMotor rightFrontDrive = hardwareMap.get(DcMotor.class, "right_front_drive);
+    private DcMotor rightFrontDrive = hardwareMap.get(DcMotor.class, "right_front_drive");
     private DcMotor leftBackDrive= hardwareMap.get(DcMotor.class, "left_back_drive");
     private DcMotor rightBackDrive = rightBackDrive = hardwareMap.get(DcMotor.class, "right_back_drive");
-    //private DcMotor elevator = hardwareMap.get (DcMotor.class, "elevator") ;
+    private DcMotor elevator = hardwareMap.get (DcMotor.class, "elevator") ;
 
 
 
@@ -81,7 +81,7 @@ public class TeleOpMode extends OpMode {
             //Press right bumper to strafe right
         }
         else {*/
-            leftFrontPower = Range.clip(drive + turn, -.95, .95);
+           /*leftFrontPower = Range.clip(drive + turn, -.95, .95);
             rightFrontPower = Range.clip(drive - turn, -.95, .95);
             leftBackPower = Range.clip(drive + turn, -.95, .95);
             rightBackPower = Range.clip(drive - turn, -.95, .95);
@@ -89,6 +89,7 @@ public class TeleOpMode extends OpMode {
             rightFrontDrive.setPower(rightFrontPower);
             leftBackDrive.setPower(leftBackPower);
             rightBackDrive.setPower(rightBackPower);
+            */
         //}
 
     }
