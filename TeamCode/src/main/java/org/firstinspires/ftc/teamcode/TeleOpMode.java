@@ -4,8 +4,8 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
 
-//Test
 
 @TeleOp(name="Basic: Iterative OpMode", group="Iterative Opmode")
 @Disabled
@@ -15,16 +15,9 @@ public class TeleOpMode extends OpMode {
 
     private DcMotor leftFrontDrive = hardwareMap.get(DcMotor.class, "left_front_drive");
     private DcMotor rightFrontDrive = hardwareMap.get(DcMotor.class, "right_front_drive");
-    private DcMotor leftBackDrive= hardwareMap.get(DcMotor.class, "left_back_drive");
-    private DcMotor rightBackDrive = rightBackDrive = hardwareMap.get(DcMotor.class, "right_back_drive");
+    private DcMotor leftBackDrive = hardwareMap.get(DcMotor.class, "left_back_drive");
+    private DcMotor rightBackDrive = hardwareMap.get(DcMotor.class, "right_back_drive");
     private DcMotor elevator = hardwareMap.get (DcMotor.class, "elevator") ;
-
-
-
-
-    /*
-     * Code to run ONCE when the driver hits INIT
-     */
 
     @Override
     public void init() {
@@ -67,20 +60,19 @@ public class TeleOpMode extends OpMode {
 
        if (gamepad1.left_bumper) {
 //            strafeLeft();
-            //Press left bumper to strafe left
-        }
-        else if (gamepad1.right_bumper) {
+       }
+       else if (gamepad1.right_bumper) {
 //            strafeRight();
-            //Press right bumper to strafe right
         }
         else {
-//            rightFrontPower = Range.clip(drive - turn, -.95, .95);
-//            leftBackPower = Range.clip(drive + turn, -.95, .95);
-//            rightBackPower = Range.clip(drive - turn, -.95, .95);
-//            leftFrontDrive.setPower(leftFrontPower);
-//            rightFrontDrive.setPower(rightFrontPower);
-//            leftBackDrive.setPower(leftBackPower);
-//            rightBackDrive.setPower(rightBackPower);
+            leftFrontPower = Range.clip(drive + turn, -.95, .95);
+            rightFrontPower = Range.clip(drive - turn, -.95, .95);
+            leftBackPower = Range.clip(drive + turn, -.95, .95);
+            rightBackPower = Range.clip(drive - turn, -.95, .95);
+            leftFrontDrive.setPower(leftFrontPower);
+            rightFrontDrive.setPower(rightFrontPower);
+            leftBackDrive.setPower(leftBackPower);
+            rightBackDrive.setPower(rightBackPower);
         }
     }
 
