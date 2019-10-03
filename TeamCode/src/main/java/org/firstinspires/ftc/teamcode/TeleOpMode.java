@@ -52,13 +52,11 @@ public class TeleOpMode extends OpMode {
     @Override
     public void loop() {
         //Driving
-        double leftFrontPower;
-        double rightFrontPower;
-        double leftBackPower;
-        double rightBackPower;
+        double rightOutput;
+        double leftOutput;
 
-        double drive = gamepad1.left_stick_y;
-        double turn = -gamepad1.right_stick_x*.85 ;
+        double drive = gamepad1.left_stick_y * .9;
+        double turn = -gamepad1.right_stick_x * .5;
 
 
 
@@ -69,14 +67,13 @@ public class TeleOpMode extends OpMode {
             strafeRight(.8);
         }
         else {
-            leftFrontPower = Range.clip(drive + turn, -.95, .95);
-            rightFrontPower = Range.clip(drive - turn, -.95, .95);
-            leftBackPower = Range.clip(drive + turn, -.95, .95);
-            rightBackPower = Range.clip(drive - turn, -.95, .95);
-            leftFrontDrive.setPower(leftFrontPower);
-            rightFrontDrive.setPower(rightFrontPower);
-            leftBackDrive.setPower(leftBackPower);
-            rightBackDrive.setPower(rightBackPower);
+            leftOutput = Range.clip(drive + turn, -.95, .95);
+            rightOutput = Range.clip(drive - turn, -.95, .95);
+
+            leftFrontDrive.setPower(leftOutput);
+            rightFrontDrive.setPower(rightOutput);
+            leftBackDrive.setPower(leftOutput);
+            rightBackDrive.setPower(rightOutput);
         }
     }
 
