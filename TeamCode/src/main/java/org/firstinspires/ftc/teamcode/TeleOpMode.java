@@ -83,4 +83,11 @@ public class TeleOpMode extends OpMode {
     public void stop() {
     }
 
+    public void strafeLeft() {
+
+    }
+
+    public void strafeRight() {
+
+    }
 }
