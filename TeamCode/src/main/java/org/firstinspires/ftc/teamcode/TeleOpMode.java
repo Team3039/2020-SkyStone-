@@ -1,5 +1,4 @@
 package org.firstinspires.ftc.teamcode;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -7,27 +6,31 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 
-@TeleOp(name="Basic: Iterative OpMode", group="Iterative Opmode")
-@Disabled
+@TeleOp(name="TeleOpMode", group="Iterative Opmode")
+
 public class TeleOpMode extends OpMode {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
 
-    private DcMotor leftFrontDrive = hardwareMap.get(DcMotor.class, "left_front_drive");
-    private DcMotor rightFrontDrive = hardwareMap.get(DcMotor.class, "right_front_drive");
-    private DcMotor leftBackDrive = hardwareMap.get(DcMotor.class, "left_back_drive");
-    private DcMotor rightBackDrive = hardwareMap.get(DcMotor.class, "right_back_drive");
-    private DcMotor elevator = hardwareMap.get (DcMotor.class, "elevator") ;
+    private DcMotor leftFrontDrive = null;
+    private DcMotor rightFrontDrive = null;
+    private DcMotor leftBackDrive = null;
+    private DcMotor rightBackDrive = null;
+//    private DcMotor elevator = hardwareMap.get (DcMotor.class, "elevator") ;
 
     @Override
     public void init() {
         //telemetry and hardwareMap stuff goes in this method.
+        leftFrontDrive = hardwareMap.get(DcMotor.class, "left_front_drive");
+        rightFrontDrive = hardwareMap.get(DcMotor.class, "right_front_drive");
+        leftBackDrive = hardwareMap.get(DcMotor.class, "left_back_drive");
+        rightBackDrive = hardwareMap.get(DcMotor.class, "right_back_drive");
 
         leftFrontDrive.setDirection(DcMotor.Direction.FORWARD);
         rightFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         leftBackDrive.setDirection(DcMotor.Direction.FORWARD);
         rightBackDrive.setDirection(DcMotor.Direction.REVERSE);
-        elevator.setDirection(DcMotor.Direction.REVERSE);
+//        elevator.setDirection(DcMotor.Direction.REVERSE);
 
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
