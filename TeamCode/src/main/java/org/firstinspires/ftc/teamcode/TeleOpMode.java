@@ -16,6 +16,7 @@ public class TeleOpMode extends OpMode {
     private DcMotor rightFrontDrive = null;
     private DcMotor leftBackDrive = null;
     private DcMotor rightBackDrive = null;
+
 //    private DcMotor elevator = hardwareMap.get (DcMotor.class, "elevator") ;
 
     @Override
@@ -62,10 +63,10 @@ public class TeleOpMode extends OpMode {
 
 
        if (gamepad1.left_bumper) {
-//            strafeLeft();
+            strafeLeft(.8);
        }
        else if (gamepad1.right_bumper) {
-//            strafeRight();
+            strafeRight(.8);
         }
         else {
             leftFrontPower = Range.clip(drive + turn, -.95, .95);
@@ -83,11 +84,18 @@ public class TeleOpMode extends OpMode {
     public void stop() {
     }
 
-    public void strafeLeft() {
+    public void strafeLeft(double strafeSpeed) {
 
+        leftFrontDrive.setPower(-strafeSpeed);
+        leftBackDrive.setPower(strafeSpeed);
+        rightFrontDrive.setPower(strafeSpeed);
+        rightBackDrive.setPower(-strafeSpeed);
     }
 
-    public void strafeRight() {
-
-    }
+    public void strafeRight(double strafeSpeed) {
+     leftFrontDrive.setPower(strafeSpeed);
+     leftBackDrive.setPower(-strafeSpeed);
+    rightFrontDrive.setPower(-strafeSpeed);
+    rightBackDrive.setPower(strafeSpeed);
+}
 }
