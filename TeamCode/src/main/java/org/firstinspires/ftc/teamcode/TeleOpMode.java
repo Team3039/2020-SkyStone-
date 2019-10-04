@@ -84,7 +84,7 @@ public class TeleOpMode extends OpMode {
     public void stop() {
     }
 
-    public void strafeLeft(double strafeSpeed) {
+    private void strafeLeft(double strafeSpeed) {
 
         leftFrontDrive.setPower(-strafeSpeed);
         leftBackDrive.setPower(strafeSpeed);
@@ -92,10 +92,10 @@ public class TeleOpMode extends OpMode {
         rightBackDrive.setPower(-strafeSpeed);
     }
 
-    public void strafeRight(double strafeSpeed) {
-     leftFrontDrive.setPower(strafeSpeed);
-     leftBackDrive.setPower(-strafeSpeed);
-    rightFrontDrive.setPower(-strafeSpeed);
-    rightBackDrive.setPower(strafeSpeed);
+    private void strafeRight(double strafeSpeed) {
+        leftFrontDrive.setPower(strafeSpeed);
+        leftBackDrive.setPower(-strafeSpeed);
+        rightFrontDrive.setPower(-strafeSpeed);
+        rightBackDrive.setPower(strafeSpeed);
 }
 }
