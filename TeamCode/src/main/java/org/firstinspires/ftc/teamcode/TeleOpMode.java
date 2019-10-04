@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.util.Range;
 
 @TeleOp(name="TeleOpMode", group="Iterative Opmode")
 
-public class TeleOpMode extends OpMode {
+public class TeleOpMode extends OpMode implements Constants{
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -94,5 +94,9 @@ public class TeleOpMode extends OpMode {
         leftBackDrive.setPower(-strafeSpeed);
         rightFrontDrive.setPower(-strafeSpeed);
         rightBackDrive.setPower(strafeSpeed);
-}
+    }
+
+    private double getDistance() {
+        return leftFrontDrive.getCurrentPosition() * PPR_TO_INCHES;
+    }
 }
