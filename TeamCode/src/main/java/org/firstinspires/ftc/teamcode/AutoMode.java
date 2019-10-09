@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Autonomous
-public class AutoMode extends LinearOpMode  {
+public class AutoMode extends LinearOpMode implements Constants  {
 
         private ElapsedTime runtime = new ElapsedTime();
         //leah was here again//
@@ -15,6 +15,7 @@ public class AutoMode extends LinearOpMode  {
         private DcMotor rightFrontDrive = null;
         private DcMotor leftBackDrive= null;
         private DcMotor rightBackDrive = null;
+
 
 
     @Override
@@ -44,6 +45,11 @@ public class AutoMode extends LinearOpMode  {
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
+            double position = getDistance();
+            telemetry.addData("Position", position);
+
+
+
 
 
         }
@@ -65,6 +71,9 @@ public class AutoMode extends LinearOpMode  {
             rightFrontDrive.setPower (power);
             leftBackDrive.setPower (-power);
             rightBackDrive.setPower (power);
+    }
+    private double getDistance() {
+        return leftFrontDrive.getCurrentPosition() * PPR_TO_INCHES;
     }
 }
 

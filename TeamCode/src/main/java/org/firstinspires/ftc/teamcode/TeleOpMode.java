@@ -35,6 +35,10 @@ public class TeleOpMode extends OpMode implements Constants{
 
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
+        leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+
         telemetry.update();
     }
 
@@ -57,6 +61,10 @@ public class TeleOpMode extends OpMode implements Constants{
 
         double drive = gamepad1.left_stick_y * .9;
         double turn = -gamepad1.right_stick_x * .5;
+        //Encoder
+        getDistance();
+
+
 
 
 
@@ -75,7 +83,9 @@ public class TeleOpMode extends OpMode implements Constants{
             leftBackDrive.setPower(leftOutput);
             rightBackDrive.setPower(rightOutput);
         }
-        getDistance();
+        telemetry.addData("position", getDistance());
+        telemetry.update();
+
     }
 
     @Override
@@ -98,6 +108,6 @@ public class TeleOpMode extends OpMode implements Constants{
     }
 
     private double getDistance() {
-        return leftFrontDrive.getCurrentPosition() * PPR_TO_INCHES;
+        return leftFrontDrive.getCurrentPosition();// * PPR_TO_INCHES;
     }
 }
