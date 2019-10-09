@@ -75,6 +75,7 @@ public class TeleOpMode extends OpMode implements Constants{
             leftBackDrive.setPower(leftOutput);
             rightBackDrive.setPower(rightOutput);
         }
+        getDistance();
     }
 
     @Override

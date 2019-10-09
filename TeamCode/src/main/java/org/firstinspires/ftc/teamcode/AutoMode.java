@@ -44,6 +44,8 @@ public class AutoMode extends LinearOpMode  {
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
+
+
         }
     }
     public void drive(double power) {
