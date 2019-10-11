@@ -64,10 +64,6 @@ public class TeleOpMode extends OpMode implements Constants{
         //Encoder
         getDistance();
 
-
-
-
-
        if (gamepad1.left_bumper) {
             strafeLeft(.8);
        }
@@ -83,7 +79,7 @@ public class TeleOpMode extends OpMode implements Constants{
             leftBackDrive.setPower(leftOutput);
             rightBackDrive.setPower(rightOutput);
         }
-        telemetry.addData("position", getDistance());
+        telemetry.addData("position", -getDistance());
         telemetry.update();
 
     }
