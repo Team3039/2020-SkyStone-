@@ -13,97 +13,54 @@ public class AutoMode extends LinearOpMode implements Constants  {
 
         private DcMotor leftFrontDrive = null;
         private DcMotor rightFrontDrive = null;
-        private DcMotor leftBackDrive= null;
+        private DcMotor leftBackDrive = null;
         private DcMotor rightBackDrive = null;
-
-
 
     @Override
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        // Initialize the hardware variables. Note that the strings used here as parameters
-        // to 'get' must correspond to the names assigned during the robot configuration
-        // step (using the FTC Robot Controller app on the phone).
+        //Initialization
         leftFrontDrive = hardwareMap.get(DcMotor.class, "leftFrontMotor");
         rightFrontDrive = hardwareMap.get(DcMotor.class, "rightFrontMotor");
         leftBackDrive = hardwareMap.get(DcMotor.class, "leftRearMotor");
         rightBackDrive = hardwareMap.get(DcMotor.class, "rightRearMotor");
 
-        // Most robots need the motor on one side to be reversed to drive forward
-        // Reverse the motor that runs backwards when connected directly to the battery
+        //Default Direction Changed
         leftFrontDrive.setDirection(DcMotor.Direction.FORWARD);
         rightFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         leftBackDrive.setDirection(DcMotor.Direction.FORWARD);
         rightBackDrive.setDirection(DcMotor.Direction.REVERSE);
 
-        // Wait for the game to start (driver presses PLAY)
+        //Change Motor Mode
+        leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        //Ready to Run to Position
+        leftFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        //Sequencing
         waitForStart();
         runtime.reset();
-        //Add game-specific stuff here
-        // run until the end of the match (driver presses STOP)
+
+        //Start of Auto Code
         while (opModeIsActive()) {
-          //  double position = getDistance();
-          // telemetry.addData("Position", position);
+            double position = getDistance();
+            telemetry.addData("Position", position);
 
-            // Determine new target position, and pass to motor controller
-            newLeftFrontTarget = robot.leftFrontDrive.getCurrentPosition() + (int)(leftFrontInches * COUNTS_PER_INCH);
-            newRightFrontTarget = robot.rightFrontDrive.getCurrentPosition() + (int)(rightFrontInches * COUNTS_PER_INCH);
-            robot.leftFrontDrive.setTargetPosition(newLeftFrontTarget);
-            robot.rightFrontDrive.setTargetPosition(newRightFrontTarget);
-            newLeftBackTarget = robot.leftBackDrive.getCurrentPosition() + (int)(leftBackInches * COUNTS_PER_INCH);
-            newRightBackTarget = robot.rightBackDrive.getCurrentPosition() + (int)(rightBackInches * COUNTS_PER_INCH);
-            robot.leftBackDrive.setTargetPosition(newLeftBackTarget);
-            robot.rightBackDrive.setTargetPosition(newRightBackTarget);
-
-            // Turn On RUN_TO_POSITION
-            robot.leftFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            robot.rightFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            robot.leftBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            robot.rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-            // reset the timeout time and start motion.
-            runtime.reset();
-            robot.leftFrontDrive.setPower(Math.abs(speed));
-            robot.rightFrontDrive.setPower(Math.abs(speed));
-            robot.leftBackDrive.setPower(Math.abs(speed));
-            robot.rightBackDrive.setPower(Math.abs(speed));
-
-            // keep looping while we are still active, and there is time left, and both motors are running.
-
-            while (opModeIsActive() &&
-                    (runtime.seconds() < timeoutS) &&
-                    (robot.leftFrontDrive.isBusy() && robot.rightFrontDrive.isBusy() && robot.leftBackDrive.isBusy() && robot.rightBackDrive.isBusy())) {
-
-                // Display it for the driver.
-                telemetry.addData("Path1",  "Running to %7d :%7d", newLeftFrontTarget,  newRightFrontTarget, newLeftBackTarget, newRightBackTarget);
-                telemetry.addData("Path2",  "Running at %7d :%7d",
-                        robot.leftFrontDrive.getCurrentPosition(),
-                        robot.rightFrontDrive.getCurrentPosition());
-                        robot.leftBackDrive.getCurrentPosition();
-                        robot.rightBackDrive.getCureentPosition();
-
-                telemetry.update();
-            }
-
-            // Stop all motion;
-            robot.leftFrontDrive.setPower(0);
-            robot.rightFrontDrive.setPower(0);
-            robot.leftBackDrive.setPower(0);
-            robot.rightBackDrive.setPower(0);
-
-            // Turn off RUN_TO_POSITION
-            robot.leftFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            robot.rightFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            robot.leftBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            robot.rightBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-            //  sleep(250);   // optional pause after each move
+            //TODO: Call the Drive to Distance method
 
         }
     }
-    public void drive(double power) {
+
+    //Raw Driving Methods
+    public void driveRaw(double power) {
             leftFrontDrive.setPower(power);
             rightFrontDrive.setPower(power);
             leftBackDrive.setPower(power);
@@ -121,8 +78,25 @@ public class AutoMode extends LinearOpMode implements Constants  {
             leftBackDrive.setPower (-power);
             rightBackDrive.setPower (power);
     }
-    private double getDistance() {
-        return leftFrontDrive.getCurrentPosition() * PPR_TO_INCHES;
+
+    //Collects Distance
+    public double getDistance() {
+        return leftBackDrive.getCurrentPosition() * PPR_TO_INCHES * 1; //Multiply by -1 if in wrong direction
+    }
+
+    //Main movement method to be called nearly every time we want to move linearly
+    public void driveToDistance(double distance) {
+        resetEncoder();
+        double distanceForMotor = distance / PPR_TO_INCHES; //This should convert the distance we collect back to what the motor reads
+
+        /*
+            TODO: Set each motor to drive to the distance variable declared earlier. Might have to get each motor to act as a follower the motor that has the encoder on it
+         */
+    }
+
+    //Sets Encoder position back to 0
+    public void resetEncoder() {
+        leftBackDrive.setTargetPosition(0);
     }
 }
 

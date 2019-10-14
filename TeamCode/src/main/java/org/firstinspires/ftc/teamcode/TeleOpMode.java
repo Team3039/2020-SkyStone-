@@ -22,7 +22,7 @@ public class TeleOpMode extends OpMode implements Constants{
     @Override
     public void init() {
         //telemetry and hardwareMap stuff goes in this method.
-        leftFrontDriveDrive = hardwareMap.get(DcMotor.class, "left_front_drive");
+        leftFrontDrive = hardwareMap.get(DcMotor.class, "left_front_drive");
         rightFrontDrive = hardwareMap.get(DcMotor.class, "right_front_drive");
         leftBackDrive = hardwareMap.get(DcMotor.class, "left_back_drive");
         rightBackDrive = hardwareMap.get(DcMotor.class, "right_back_drive");
