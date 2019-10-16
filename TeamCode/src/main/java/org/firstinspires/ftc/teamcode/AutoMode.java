@@ -23,16 +23,17 @@ public class AutoMode extends LinearOpMode implements Constants  {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        resetEncoders();
+
 
 
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
-        leftFrontDrive = hardwareMap.get(DcMotor.class, "leftFrontMotor");
-        rightFrontDrive = hardwareMap.get(DcMotor.class, "rightFrontMotor");
-        leftBackDrive = hardwareMap.get(DcMotor.class, "leftRearMotor");
-        rightBackDrive = hardwareMap.get(DcMotor.class, "rightRearMotor");
+        leftFrontDrive = hardwareMap.get(DcMotor.class, "left_front_drive");
+        rightFrontDrive = hardwareMap.get(DcMotor.class, "right_front_drive");
+        leftBackDrive = hardwareMap.get(DcMotor.class, "left_back_drive");
+        rightBackDrive = hardwareMap.get(DcMotor.class, "right_back_drive");
+
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
@@ -40,6 +41,7 @@ public class AutoMode extends LinearOpMode implements Constants  {
         rightFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         leftBackDrive.setDirection(DcMotor.Direction.FORWARD);
         rightBackDrive.setDirection(DcMotor.Direction.REVERSE);
+        resetEncoders();
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -48,8 +50,24 @@ public class AutoMode extends LinearOpMode implements Constants  {
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
-            double position = getDistance();
-            telemetry.addData("Position", position);
+
+            leftBackDrive.setTargetPosition(1120);
+            leftBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+
+
+            drive(.45);
+
+            while (leftFrontDrive.isBusy()){
+                telemetry.addData("left position:", getLeftDistance());
+                telemetry.update();
+                idle();
+            }
+            drive(0.0);
+
+
+
+
 
 
 
@@ -59,7 +77,7 @@ public class AutoMode extends LinearOpMode implements Constants  {
     }
     public void resetEncoders(){
         leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
@@ -81,8 +99,8 @@ public class AutoMode extends LinearOpMode implements Constants  {
             leftBackDrive.setPower (-power);
             rightBackDrive.setPower (power);
     }
-    private double getDistance() {
-        return leftFrontDrive.getCurrentPosition() * PPR_TO_INCHES;
+    private double getLeftDistance() {
+        return leftBackDrive.getCurrentPosition() * PPR_TO_INCHES;
     }
 }
 
