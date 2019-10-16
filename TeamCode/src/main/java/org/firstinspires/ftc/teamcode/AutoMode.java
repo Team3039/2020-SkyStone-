@@ -23,6 +23,9 @@ public class AutoMode extends LinearOpMode implements Constants  {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
+        resetEncoders();
+
+
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
@@ -53,6 +56,12 @@ public class AutoMode extends LinearOpMode implements Constants  {
 
 
         }
+    }
+    public void resetEncoders(){
+        leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
     public void drive(double power) {
             leftFrontDrive.setPower(power);

@@ -35,8 +35,10 @@ public class TeleOpMode extends OpMode implements Constants{
 
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
-        leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
 
         telemetry.update();
@@ -61,8 +63,6 @@ public class TeleOpMode extends OpMode implements Constants{
 
         double drive = gamepad1.left_stick_y * .9;
         double turn = -gamepad1.right_stick_x * .5;
-        //Encoder
-        getDistance();
 
        if (gamepad1.left_bumper) {
             strafeLeft(.8);
@@ -79,7 +79,8 @@ public class TeleOpMode extends OpMode implements Constants{
             leftBackDrive.setPower(leftOutput);
             rightBackDrive.setPower(rightOutput);
         }
-        telemetry.addData("position", -getDistance());
+        telemetry.addData("left position:", getLeftDistance());
+        telemetry.addData("right position:", getRightDistance());
         telemetry.update();
 
     }
@@ -103,7 +104,10 @@ public class TeleOpMode extends OpMode implements Constants{
         rightBackDrive.setPower(strafeSpeed);
     }
 
-    private double getDistance() {
-        return leftFrontDrive.getCurrentPosition();// * PPR_TO_INCHES;
+    private double getLeftDistance() {
+        return leftBackDrive.getCurrentPosition() * PPR_TO_INCHES;
+    }
+    private double getRightDistance() {
+        return rightBackDrive.getCurrentPosition() * PPR_TO_INCHES;
     }
 }
