@@ -21,24 +21,17 @@ public class AutoMode extends LinearOpMode implements Constants  {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-
-
-
-        // Initialize the hardware variables. Note that the strings used here as parameters
-        // to 'get' must correspond to the names assigned during the robot configuration
-        // step (using the FTC Robot Controller app on the phone).
-        leftFrontDrive = hardwareMap.get(DcMotor.class, "left_front_drive");
-        rightFrontDrive = hardwareMap.get(DcMotor.class, "right_front_drive");
-        leftBackDrive = hardwareMap.get(DcMotor.class, "left_back_drive");
-        rightBackDrive = hardwareMap.get(DcMotor.class, "right_back_drive");
-
+        //Initialization
+        leftFrontDrive = hardwareMap.get(DcMotor.class, "leftFrontMotor");
+        rightFrontDrive = hardwareMap.get(DcMotor.class, "rightFrontMotor");
+        leftBackDrive = hardwareMap.get(DcMotor.class, "leftRearMotor");
+        rightBackDrive = hardwareMap.get(DcMotor.class, "rightRearMotor");
 
         //Default Direction Changed
         leftFrontDrive.setDirection(DcMotor.Direction.FORWARD);
         rightFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         leftBackDrive.setDirection(DcMotor.Direction.FORWARD);
         rightBackDrive.setDirection(DcMotor.Direction.REVERSE);
-        resetEncoders();
 
         //Change Motor Mode
         leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -56,36 +49,18 @@ public class AutoMode extends LinearOpMode implements Constants  {
         waitForStart();
         runtime.reset();
 
-
-            leftBackDrive.setTargetPosition(1120);
-            leftBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-
-
-            drive(.45);
-
-            while (leftFrontDrive.isBusy()){
-                telemetry.addData("left position:", getLeftDistance());
-                telemetry.update();
-                idle();
-            }
-            drive(0.0);
-
-
-
-
+        //Start of Auto Code
+        while (opModeIsActive()) {
+            double position = getDistance();
+            telemetry.addData("Position", position);
 
             //TODO: Call the Drive to Distance method
 
         }
     }
-    public void resetEncoders(){
-        leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-    }
-    public void drive(double power) {
+
+    //Raw Driving Methods
+    public void driveRaw(double power) {
             leftFrontDrive.setPower(power);
             rightFrontDrive.setPower(power);
             leftBackDrive.setPower(power);
@@ -103,8 +78,25 @@ public class AutoMode extends LinearOpMode implements Constants  {
             leftBackDrive.setPower (-power);
             rightBackDrive.setPower (power);
     }
-    private double getLeftDistance() {
-        return leftBackDrive.getCurrentPosition() * PPR_TO_INCHES;
+
+    //Collects Distance
+    public double getDistance() {
+        return leftBackDrive.getCurrentPosition() * PPR_TO_INCHES * 1; //Multiply by -1 if in wrong direction
+    }
+
+    //Main movement method to be called nearly every time we want to move linearly
+    public void driveToDistance(double distance) {
+        resetEncoder();
+        double distanceForMotor = distance / PPR_TO_INCHES; //This should convert the distance we collect back to what the motor reads
+
+        /*
+            TODO: Set each motor to drive to the distance variable declared earlier. Might have to get each motor to act as a follower the motor that has the encoder on it
+         */
+    }
+
+    //Sets Encoder position back to 0
+    public void resetEncoder() {
+        leftBackDrive.setTargetPosition(0);
     }
 }
 
