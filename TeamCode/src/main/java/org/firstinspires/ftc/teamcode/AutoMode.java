@@ -22,10 +22,10 @@ public class AutoMode extends LinearOpMode implements Constants  {
         telemetry.update();
 
         //Initialization
-        leftFrontDrive = hardwareMap.get(DcMotor.class, "leftFrontMotor");
-        rightFrontDrive = hardwareMap.get(DcMotor.class, "rightFrontMotor");
-        leftBackDrive = hardwareMap.get(DcMotor.class, "leftRearMotor");
-        rightBackDrive = hardwareMap.get(DcMotor.class, "rightRearMotor");
+        leftFrontDrive = hardwareMap.get(DcMotor.class, "left_front_drive");
+        rightFrontDrive = hardwareMap.get(DcMotor.class, "right_front_drive");
+        leftBackDrive = hardwareMap.get(DcMotor.class, "left_back_drive");
+        rightBackDrive = hardwareMap.get(DcMotor.class, "right_back_drive");
 
         //Default Direction Changed
         leftFrontDrive.setDirection(DcMotor.Direction.FORWARD);
@@ -39,11 +39,11 @@ public class AutoMode extends LinearOpMode implements Constants  {
         leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        //Ready to Run to Position
-        leftFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        leftBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        //Ready to Run to Position
+//        leftFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        rightFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        leftBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         //Sequencing
         waitForStart();
@@ -51,10 +51,11 @@ public class AutoMode extends LinearOpMode implements Constants  {
 
         //Start of Auto Code
         while (opModeIsActive()) {
-            double position = getDistance();
-            telemetry.addData("Position", position);
+           /* double position = getDistance();
+            telemetry.addData("Position", position);*/
 
-            //TODO: Call the Drive to Distance method
+            driveToDistance(12);
+
 
         }
     }
@@ -81,17 +82,47 @@ public class AutoMode extends LinearOpMode implements Constants  {
 
     //Collects Distance
     public double getDistance() {
-        return leftBackDrive.getCurrentPosition() * PPR_TO_INCHES * 1; //Multiply by -1 if in wrong direction
+        return leftBackDrive.getCurrentPosition() * PPR_TO_INCHES * -1; //Multiply by -1 if in wrong direction
     }
 
     //Main movement method to be called nearly every time we want to move linearly
     public void driveToDistance(double distance) {
         resetEncoder();
-        double distanceForMotor = distance / PPR_TO_INCHES; //This should convert the distance we collect back to what the motor reads
+        int distanceForMotor = (int)(distance * COUNTS_PER_INCH); //This should convert the distance we collect back to what the motor reads
 
-        /*
-            TODO: Set each motor to drive to the distance variable declared earlier. Might have to get each motor to act as a follower the motor that has the encoder on it
-         */
+        leftBackDrive.setTargetPosition(distanceForMotor);
+        leftBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftFrontDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightFrontDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        driveRaw(.45);
+
+        while (leftBackDrive.isBusy()){
+            telemetry.addData("Current Position", leftBackDrive.getCurrentPosition());
+            telemetry.addData("Target Position: ", leftBackDrive.getTargetPosition());
+            telemetry.update();
+        }
+        driveRaw(0.0);
+
+
+//        while(getDistance()!=distance){
+//            leftBackDrive.setTargetPosition(distanceForMotor);
+//            leftBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//            telemetry.addData("Target Position: ", leftBackDrive.getTargetPosition());
+//            telemetry.update();
+//        }
+
+//        leftBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        leftFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        rightFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        rightBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//
+//        while (getDistance()<=distance){
+//                driveRaw(.3);
+//        }
+//
+//        driveRaw(0);
+
     }
 
     //Sets Encoder position back to 0
