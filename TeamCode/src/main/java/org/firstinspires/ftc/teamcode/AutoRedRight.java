@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Autonomous
-public class AutoMode extends LinearOpMode implements Constants  {
+public class AutoRedRight extends LinearOpMode implements Constants  {
 
         private ElapsedTime runtime = new ElapsedTime();
 
@@ -18,7 +18,7 @@ public class AutoMode extends LinearOpMode implements Constants  {
         private DcMotor rightBackDrive = null;
 
         //Gamepiece Motors
-        private Servo johnDoe = null;
+        private Servo arm = null;
         private DcMotor elevatorA = null;
         private DcMotor elevatorB = null;
         private DcMotor intakeA = null;
@@ -34,7 +34,7 @@ public class AutoMode extends LinearOpMode implements Constants  {
         rightFrontDrive = hardwareMap.get(DcMotor.class, "right_front_drive");
         leftBackDrive = hardwareMap.get(DcMotor.class, "left_back_drive");
         rightBackDrive = hardwareMap.get(DcMotor.class, "right_back_drive");
-        johnDoe = hardwareMap.get (Servo.class, "john_doe");
+        arm = hardwareMap.get (Servo.class, "arm");
         elevatorA = hardwareMap.get(DcMotor.class, "elevatorA");
         elevatorB = hardwareMap.get(DcMotor.class, "elevatorB");
         intakeA = hardwareMap.get(DcMotor.class, "intakeA");
@@ -64,7 +64,9 @@ public class AutoMode extends LinearOpMode implements Constants  {
 
         //Start of Auto Code
         while (opModeIsActive()) {
-            driveToDistance(6.5);
+            driveToDistance(INCHES_PER_SQUARE * 5);
+
+
 
 
 

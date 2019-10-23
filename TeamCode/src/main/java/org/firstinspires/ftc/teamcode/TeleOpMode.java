@@ -20,7 +20,7 @@ public class TeleOpMode extends OpMode implements Constants{
     private DcMotor rightBackDrive = null;
 
     //Gamepiece Motors
-    private Servo johnDoe = null;
+    private Servo arm = null;
     private DcMotor elevatorA = null;
     private DcMotor elevatorB = null;
     private DcMotor intakeA = null;
@@ -36,7 +36,7 @@ public class TeleOpMode extends OpMode implements Constants{
         rightFrontDrive = hardwareMap.get(DcMotor.class, "right_front_drive");
         leftBackDrive = hardwareMap.get(DcMotor.class, "left_back_drive");
         rightBackDrive = hardwareMap.get(DcMotor.class, "right_back_drive");
-        johnDoe = hardwareMap.get (Servo.class, "john_doe");
+        arm = hardwareMap.get (Servo.class, "arm");
         elevatorA = hardwareMap.get(DcMotor.class, "elevatorA");
         elevatorB = hardwareMap.get(DcMotor.class, "elevatorB");
         intakeA = hardwareMap.get(DcMotor.class, "intakeA");
@@ -97,10 +97,10 @@ public class TeleOpMode extends OpMode implements Constants{
             rightBackDrive.setPower(rightOutput);
         }
         if (gamepad2.left_bumper) {
-            inhaleStone(.8);
+            setIntakeSpeed(.8);
         }
         if (gamepad2.right_bumper) {
-            expelStone(.8);
+            setIntakeSpeed(-.8);
         }
         telemetry.addData("position", -getDistance());
         telemetry.update();
@@ -126,16 +126,10 @@ public class TeleOpMode extends OpMode implements Constants{
         rightBackDrive.setPower(strafeSpeed);
     }
 
-    private void inhaleStone (double power) {
+    private void setIntakeSpeed(double power) {
         intakeB.setPower(power);
         intakeA.setPower(power);
     }
-
-    private void expelStone (double power) {
-        intakeA.setPower(-power);
-        intakeB.setPower(-power);
-    }
-
 
     private double getDistance() {
         return leftFrontDrive.getCurrentPosition();// * PPR_TO_INCHES;
