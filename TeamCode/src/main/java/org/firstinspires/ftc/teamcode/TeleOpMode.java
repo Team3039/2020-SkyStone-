@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -12,10 +13,19 @@ public class TeleOpMode extends OpMode implements Constants{
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
 
+    //Driivetrain Motors
     private DcMotor leftFrontDrive = null;
     private DcMotor rightFrontDrive = null;
     private DcMotor leftBackDrive = null;
     private DcMotor rightBackDrive = null;
+
+    //Gamepiece Motors
+    private Servo johnDoe = null;
+    private DcMotor elevatorA = null;
+    private DcMotor elevatorB = null;
+    private DcMotor intakeA = null;
+    private DcMotor intakeB = null;
+
 
 //    private DcMotor elevator = hardwareMap.get (DcMotor.class, "elevator") ;
 
@@ -26,11 +36,18 @@ public class TeleOpMode extends OpMode implements Constants{
         rightFrontDrive = hardwareMap.get(DcMotor.class, "right_front_drive");
         leftBackDrive = hardwareMap.get(DcMotor.class, "left_back_drive");
         rightBackDrive = hardwareMap.get(DcMotor.class, "right_back_drive");
+        johnDoe = hardwareMap.get (Servo.class, "john_doe");
+        elevatorA = hardwareMap.get(DcMotor.class, "elevatorA");
+        elevatorB = hardwareMap.get(DcMotor.class, "elevatorB");
+        intakeA = hardwareMap.get(DcMotor.class, "intakeA");
+        intakeB = hardwareMap.get(DcMotor.class, "intakeB");
 
         leftFrontDrive.setDirection(DcMotor.Direction.FORWARD);
         rightFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         leftBackDrive.setDirection(DcMotor.Direction.FORWARD);
         rightBackDrive.setDirection(DcMotor.Direction.REVERSE);
+
+
 //        elevator.setDirection(DcMotor.Direction.REVERSE);
 
         // Tell the driver that initialization is complete.
@@ -79,6 +96,12 @@ public class TeleOpMode extends OpMode implements Constants{
             leftBackDrive.setPower(leftOutput);
             rightBackDrive.setPower(rightOutput);
         }
+        if (gamepad2.left_bumper) {
+            inhaleStone(.8);
+        }
+        if (gamepad2.right_bumper) {
+            expelStone(.8);
+        }
         telemetry.addData("position", -getDistance());
         telemetry.update();
 
@@ -102,6 +125,17 @@ public class TeleOpMode extends OpMode implements Constants{
         rightFrontDrive.setPower(-strafeSpeed);
         rightBackDrive.setPower(strafeSpeed);
     }
+
+    private void inhaleStone (double power) {
+        intakeB.setPower(power);
+        intakeA.setPower(power);
+    }
+
+    private void expelStone (double power) {
+        intakeA.setPower(-power);
+        intakeB.setPower(-power);
+    }
+
 
     private double getDistance() {
         return leftFrontDrive.getCurrentPosition();// * PPR_TO_INCHES;

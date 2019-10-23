@@ -3,18 +3,26 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Autonomous
 public class AutoMode extends LinearOpMode implements Constants  {
 
         private ElapsedTime runtime = new ElapsedTime();
-        //leah was here again//
 
+        //Drivetrain Motors
         private DcMotor leftFrontDrive = null;
         private DcMotor rightFrontDrive = null;
         private DcMotor leftBackDrive = null;
         private DcMotor rightBackDrive = null;
+
+        //Gamepiece Motors
+        private Servo johnDoe = null;
+        private DcMotor elevatorA = null;
+        private DcMotor elevatorB = null;
+        private DcMotor intakeA = null;
+        private DcMotor intakeB = null;
 
     @Override
     public void runOpMode() {
@@ -26,6 +34,11 @@ public class AutoMode extends LinearOpMode implements Constants  {
         rightFrontDrive = hardwareMap.get(DcMotor.class, "right_front_drive");
         leftBackDrive = hardwareMap.get(DcMotor.class, "left_back_drive");
         rightBackDrive = hardwareMap.get(DcMotor.class, "right_back_drive");
+        johnDoe = hardwareMap.get (Servo.class, "john_doe");
+        elevatorA = hardwareMap.get(DcMotor.class, "elevatorA");
+        elevatorB = hardwareMap.get(DcMotor.class, "elevatorB");
+        intakeA = hardwareMap.get(DcMotor.class, "intakeA");
+        intakeB = hardwareMap.get(DcMotor.class, "intakeB");
 
         //Default Direction Changed
         leftFrontDrive.setDirection(DcMotor.Direction.FORWARD);
@@ -51,10 +64,8 @@ public class AutoMode extends LinearOpMode implements Constants  {
 
         //Start of Auto Code
         while (opModeIsActive()) {
-           /* double position = getDistance();
-            telemetry.addData("Position", position);*/
+            driveToDistance(6.5);
 
-            driveToDistance(12);
 
 
         }
@@ -82,27 +93,27 @@ public class AutoMode extends LinearOpMode implements Constants  {
 
     //Collects Distance
     public double getDistance() {
-        return leftBackDrive.getCurrentPosition() * PPR_TO_INCHES * -1; //Multiply by -1 if in wrong direction
+        return leftBackDrive.getCurrentPosition() * PPR_TO_INCHES * -1; // Multiplying it by -1 isn't doing anything.
     }
 
-    //Main movement method to be called nearly every time we want to move linearly
+    //Main movement method to be called nearly  every time we want to move linearly
     public void driveToDistance(double distance) {
         resetEncoder();
         int distanceForMotor = (int)(distance * COUNTS_PER_INCH); //This should convert the distance we collect back to what the motor reads
 
         leftBackDrive.setTargetPosition(distanceForMotor);
-        leftBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         leftFrontDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightFrontDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        driveRaw(.45);
+        driveRaw(.99);
 
-        while (leftBackDrive.isBusy()){
+        while (leftBackDrive.isBusy()) {
             telemetry.addData("Current Position", leftBackDrive.getCurrentPosition());
             telemetry.addData("Target Position: ", leftBackDrive.getTargetPosition());
             telemetry.update();
         }
-        driveRaw(0.0);
+          driveRaw(0.0);
 
 
 //        while(getDistance()!=distance){
