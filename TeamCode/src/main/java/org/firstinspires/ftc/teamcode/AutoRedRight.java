@@ -64,7 +64,7 @@ public class AutoRedRight extends LinearOpMode implements Constants  {
 
         //Start of Auto Code
         while (opModeIsActive()) {
-            driveToDistance(INCHES_PER_SQUARE * 5);
+
 
 
 
@@ -92,6 +92,11 @@ public class AutoRedRight extends LinearOpMode implements Constants  {
             leftBackDrive.setPower (-power);
             rightBackDrive.setPower (power);
     }
+    private void setIntakeSpeed(double power) {
+        intakeB.setPower(power);
+        intakeA.setPower(power);
+    }
+
 
     //Collects Distance
     public double getDistance() {
@@ -143,4 +148,5 @@ public class AutoRedRight extends LinearOpMode implements Constants  {
         leftBackDrive.setTargetPosition(0);
     }
 }
+
 

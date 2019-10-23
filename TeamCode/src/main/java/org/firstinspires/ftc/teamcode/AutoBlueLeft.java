@@ -66,12 +66,9 @@ public class AutoBlueLeft {
 
             //Start of Auto Code
             while (opModeIsActive()) {
-                driveToDistance(INCHES_PER_SQUARE * 5);
-
-
-
-
-
+                cycleStone1();
+                cycleStone2();
+                cycleStone3();
             }
         }
 
@@ -94,6 +91,56 @@ public class AutoBlueLeft {
             leftBackDrive.setPower (-power);
             rightBackDrive.setPower (power);
         }
+        private void setIntakeSpeed(double power) {
+            intakeB.setPower(power);
+            intakeA.setPower(power);
+        }
+        private void cycleStone1() {
+            driveToDistance(INCHES_PER_SQUARE * 2);
+            turnRight(NINETY_TURN);
+            driveToDistance(INCHES_PER_SQUARE * 1.5);
+            turnLeft(NINETY_TURN);
+            driveToDistance(INCHES_PER_SQUARE/4);
+            setIntakeSpeed(.75);
+            //-------------------------Make the wheels stop
+            driveToDistance(-INCHES_PER_SQUARE/4);
+            turnLeft(NINETY_TURN);
+            driveToDistance(INCHES_PER_SQUARE * 3);
+            setIntakeSpeed(-.75);
+            turnRight(NINETY_TURN);
+            driveToDistance(-INCHES_PER_SQUARE * 2);
+        }
+        private void cycleStone2() {
+            driveToDistance(INCHES_PER_SQUARE * 2);
+            turnRight(NINETY_TURN);
+            driveToDistance(INCHES_PER_SQUARE * 2);
+            turnLeft(NINETY_TURN);
+            driveToDistance(INCHES_PER_SQUARE/4);
+            setIntakeSpeed(.75);
+            //-------------------------Make the wheels stop
+            driveToDistance(-INCHES_PER_SQUARE/4);
+            turnLeft(NINETY_TURN);
+            driveToDistance(INCHES_PER_SQUARE * 3.5);
+            setIntakeSpeed(-.75);
+            turnRight(NINETY_TURN);
+            driveToDistance(-INCHES_PER_SQUARE * 2);
+        }
+        private void cycleStone3() {
+            driveToDistance(INCHES_PER_SQUARE * 2);
+            turnRight(NINETY_TURN);
+            driveToDistance(INCHES_PER_SQUARE * 2.5);
+            turnLeft(NINETY_TURN);
+            driveToDistance(INCHES_PER_SQUARE/4);
+            setIntakeSpeed(.75);
+            //-------------------------Make the wheels stop
+            driveToDistance(-INCHES_PER_SQUARE/4);
+            turnLeft(NINETY_TURN);
+            driveToDistance(INCHES_PER_SQUARE * 3);
+            setIntakeSpeed(-.75);
+            turnRight(NINETY_TURN);
+            driveToDistance(-INCHES_PER_SQUARE * 2);
+        }
+
 
         //Collects Distance
         public double getDistance() {
