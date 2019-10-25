@@ -20,9 +20,9 @@ public class TeleOpMode extends OpMode implements Constants{
     private DcMotor rightBackDrive = null;
 
     //Gamepiece Motors
-    private Servo arm = null;
-    private DcMotor elevatorA = null;
-    private DcMotor elevatorB = null;
+//    private Servo arm = null;
+//    private DcMotor elevatorA = null;
+//    private DcMotor elevatorB = null;
     private DcMotor intakeA = null;
     private DcMotor intakeB = null;
 
@@ -36,9 +36,9 @@ public class TeleOpMode extends OpMode implements Constants{
         rightFrontDrive = hardwareMap.get(DcMotor.class, "right_front_drive");
         leftBackDrive = hardwareMap.get(DcMotor.class, "left_back_drive");
         rightBackDrive = hardwareMap.get(DcMotor.class, "right_back_drive");
-        arm = hardwareMap.get (Servo.class, "arm");
-        elevatorA = hardwareMap.get(DcMotor.class, "elevatorA");
-        elevatorB = hardwareMap.get(DcMotor.class, "elevatorB");
+//        arm = hardwareMap.get (Servo.class, "arm");
+//        elevatorA = hardwareMap.get(DcMotor.class, "elevatorA");
+//        elevatorB = hardwareMap.get(DcMotor.class, "elevatorB");
         intakeA = hardwareMap.get(DcMotor.class, "intakeA");
         intakeB = hardwareMap.get(DcMotor.class, "intakeB");
 
