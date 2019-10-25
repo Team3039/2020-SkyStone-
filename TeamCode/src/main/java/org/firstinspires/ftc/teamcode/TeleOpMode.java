@@ -23,8 +23,8 @@ public class TeleOpMode extends OpMode implements Constants{
 //    private Servo arm = null;
 //    private DcMotor elevatorA = null;
 //    private DcMotor elevatorB = null;
-    private DcMotor intakeA = null;
-    private DcMotor intakeB = null;
+//    private DcMotor intakeA = null;
+//    private DcMotor intakeB = null;
 
 
 //    private DcMotor elevator = hardwareMap.get (DcMotor.class, "elevator") ;
@@ -39,8 +39,8 @@ public class TeleOpMode extends OpMode implements Constants{
 //        arm = hardwareMap.get (Servo.class, "arm");
 //        elevatorA = hardwareMap.get(DcMotor.class, "elevatorA");
 //        elevatorB = hardwareMap.get(DcMotor.class, "elevatorB");
-        intakeA = hardwareMap.get(DcMotor.class, "intakeA");
-        intakeB = hardwareMap.get(DcMotor.class, "intakeB");
+//               intakeA = hardwareMap.get(DcMotor.class, "intakeA");
+//        intakeB = hardwareMap.get(DcMotor.class, "intakeB");
 
         leftFrontDrive.setDirection(DcMotor.Direction.FORWARD);
         rightFrontDrive.setDirection(DcMotor.Direction.REVERSE);
@@ -127,8 +127,8 @@ public class TeleOpMode extends OpMode implements Constants{
     }
 
     private void setIntakeSpeed(double power) {
-        intakeB.setPower(power);
-        intakeA.setPower(power);
+//        intakeB.setPower(power);
+//        intakeA.setPower(power);
     }
 
     private double getDistance() {

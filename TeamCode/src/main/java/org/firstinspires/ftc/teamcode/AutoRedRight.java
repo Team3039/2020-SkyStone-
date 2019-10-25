@@ -18,11 +18,11 @@ public class AutoRedRight extends LinearOpMode implements Constants  {
         private DcMotor rightBackDrive = null;
 
         //Gamepiece Motors
-        private Servo arm = null;
-        private DcMotor elevatorA = null;
-        private DcMotor elevatorB = null;
-        private DcMotor intakeA = null;
-        private DcMotor intakeB = null;
+//        private Servo arm = null;
+//        private DcMotor elevatorA = null;
+//        private DcMotor elevatorB = null;
+//        private DcMotor intakeA = null;
+//        private DcMotor intakeB = null;
 
     @Override
     public void runOpMode() {
@@ -34,11 +34,11 @@ public class AutoRedRight extends LinearOpMode implements Constants  {
         rightFrontDrive = hardwareMap.get(DcMotor.class, "right_front_drive");
         leftBackDrive = hardwareMap.get(DcMotor.class, "left_back_drive");
         rightBackDrive = hardwareMap.get(DcMotor.class, "right_back_drive");
-        arm = hardwareMap.get (Servo.class, "arm");
-        elevatorA = hardwareMap.get(DcMotor.class, "elevatorA");
-        elevatorB = hardwareMap.get(DcMotor.class, "elevatorB");
-        intakeA = hardwareMap.get(DcMotor.class, "intakeA");
-        intakeB = hardwareMap.get(DcMotor.class, "intakeB");
+//        arm = hardwareMap.get (Servo.class, "arm");
+//        elevatorA = hardwareMap.get(DcMotor.class, "elevatorA");
+//        elevatorB = hardwareMap.get(DcMotor.class, "elevatorB");
+//        intakeA = hardwareMap.get(DcMotor.class, "intakeA");
+//        intakeB = hardwareMap.get(DcMotor.class, "intakeB");
 
         //Default Direction Changed
         leftFrontDrive.setDirection(DcMotor.Direction.FORWARD);
@@ -93,8 +93,8 @@ public class AutoRedRight extends LinearOpMode implements Constants  {
             rightBackDrive.setPower (power);
     }
     private void setIntakeSpeed(double power) {
-        intakeB.setPower(power);
-        intakeA.setPower(power);
+//        intakeB.setPower(power);
+//        intakeA.setPower(power);
     }
 
 
