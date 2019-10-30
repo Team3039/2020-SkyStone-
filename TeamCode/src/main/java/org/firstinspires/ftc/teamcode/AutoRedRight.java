@@ -58,17 +58,20 @@ public class AutoRedRight extends LinearOpMode implements Constants  {
 //        leftBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 //        rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
+
+
         //Sequencing
         waitForStart();
+        leftFrontDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightFrontDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        leftBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         runtime.reset();
 
+
         //Start of Auto Code
-        while (opModeIsActive()) {
-
-
-
-
-
+        while (opModeIsActive() && runtime.seconds()<2.0 ) {
+            driveRaw(.89);
 
         }
     }
