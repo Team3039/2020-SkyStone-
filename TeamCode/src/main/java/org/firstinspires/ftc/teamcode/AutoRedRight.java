@@ -17,6 +17,7 @@ public class AutoRedRight extends LinearOpMode implements Constants  {
         private DcMotor leftBackDrive = null;
         private DcMotor rightBackDrive = null;
 
+
         //Gamepiece Motors
 //        private Servo arm = null;
 //        private DcMotor elevatorA = null;
@@ -28,6 +29,8 @@ public class AutoRedRight extends LinearOpMode implements Constants  {
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
+
+
 
         //Initialization
         leftFrontDrive = hardwareMap.get(DcMotor.class, "left_front_drive");
@@ -70,10 +73,27 @@ public class AutoRedRight extends LinearOpMode implements Constants  {
 
 
         //Start of Auto Code
-        while (opModeIsActive() && runtime.seconds()<2.0 ) {
-            driveRaw(.89);
+        while (opModeIsActive() ) {
+
+            while (runtime.seconds()< 2.5)
+            {
+                driveRaw(-.89);
+            }
+            while (runtime.seconds() >= 2.5 && runtime.seconds()<3.75)
+            {
+                turnRight(.6);
+            }
+            while(runtime.seconds()>=3.75 && runtime.seconds()< 5.0)
+            {
+                driveRaw(-.89);
+            }
+            driveRaw(0.0);
+
+
 
         }
+
+
     }
 
     //Raw Driving Methods
