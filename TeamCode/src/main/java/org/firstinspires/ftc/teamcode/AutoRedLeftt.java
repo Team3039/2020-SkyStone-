@@ -20,10 +20,14 @@ public class AutoRedLeftt {
 
         //Gamepiece Motors
         private Servo arm = null;
-        private DcMotor elevatorA = null;
-        private DcMotor elevatorB = null;
         private DcMotor intakeA = null;
         private DcMotor intakeB = null;
+        private Servo clampA = null;
+        private Servo clampB = null;
+
+        //Switches
+
+
 
         @Override
         public void runOpMode() {
@@ -36,8 +40,6 @@ public class AutoRedLeftt {
             leftBackDrive = hardwareMap.get(DcMotor.class, "left_back_drive");
             rightBackDrive = hardwareMap.get(DcMotor.class, "right_back_drive");
             arm = hardwareMap.get (Servo.class, "arm");
-            elevatorA = hardwareMap.get(DcMotor.class, "elevatorA");
-            elevatorB = hardwareMap.get(DcMotor.class, "elevatorB");
             intakeA = hardwareMap.get(DcMotor.class, "intakeA");
             intakeB = hardwareMap.get(DcMotor.class, "intakeB");
 
@@ -101,11 +103,12 @@ public class AutoRedLeftt {
             turnRight(NINETY_TURN);
             driveToDistance(INCHES_PER_SQUARE/4);
             setIntakeSpeed(.75);
-            //-------------------------Make the wheels stop
+         //limit switch stuff   setIntakeSpeed(0);
             driveToDistance(-INCHES_PER_SQUARE/4);
             turnRight(NINETY_TURN);
             driveToDistance(INCHES_PER_SQUARE * 3);
             setIntakeSpeed(-.75);
+            //limit switch stuff    setIntakeSpeed(0);
             turnLeft(NINETY_TURN);
             driveToDistance(-INCHES_PER_SQUARE * 2);
         }
@@ -116,11 +119,12 @@ public class AutoRedLeftt {
             turnRight(NINETY_TURN);
             driveToDistance(INCHES_PER_SQUARE/4);
             setIntakeSpeed(.75);
-            //-------------------------Make the wheels stop
+            //limit switch stuff   setIntakeSpeed(0);
             driveToDistance(-INCHES_PER_SQUARE/4);
             turnLeft(NINETY_TURN);
             driveToDistance(INCHES_PER_SQUARE * 3.5);
             setIntakeSpeed(-.75);
+            //limit switch stuff    setIntakeSpeed(0);
             turnLeft(NINETY_TURN);
             driveToDistance(-INCHES_PER_SQUARE * 2);
         }
@@ -131,13 +135,22 @@ public class AutoRedLeftt {
             turnRight(NINETY_TURN);
             driveToDistance(INCHES_PER_SQUARE/4);
             setIntakeSpeed(.75);
-            //-------------------------Make the wheels stop
+            //limit switch stuff   setIntakeSpeed(0);
             driveToDistance(-INCHES_PER_SQUARE/4);
             turnRight(NINETY_TURN);
             driveToDistance(INCHES_PER_SQUARE * 3);
             setIntakeSpeed(-.75);
+            //limit switch stuff    setIntakeSpeed(0);
             turnLeft(NINETY_TURN);
             driveToDistance(-INCHES_PER_SQUARE * 2);
+        }
+        private void clampFoundation() {
+            clampA.setPosition(CLAMP_FOUNDATION);
+            clampB.setPosition(CLAMP_FOUNDATION);
+        }
+        private void releaseFoundation() {
+            clampA.setPosition(RELEASE_FOUNDATION);
+            clampB.setPosition(RELEASE_FOUNDATION);
         }
 
 

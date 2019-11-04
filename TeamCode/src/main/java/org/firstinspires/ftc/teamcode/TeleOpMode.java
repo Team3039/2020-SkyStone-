@@ -20,9 +20,9 @@ public class TeleOpMode extends OpMode implements Constants{
     private DcMotor rightBackDrive = null;
 
     //Gamepiece Motors
-    private Servo arm = null;
-    private DcMotor elevatorA = null;
-    private DcMotor elevatorB = null;
+    private Servo arm1 = null;
+    private Servo arm2 = null;
+    private DcMotor elevator = null;
     private DcMotor intakeA = null;
     private DcMotor intakeB = null;
 
@@ -36,9 +36,9 @@ public class TeleOpMode extends OpMode implements Constants{
         rightFrontDrive = hardwareMap.get(DcMotor.class, "right_front_drive");
         leftBackDrive = hardwareMap.get(DcMotor.class, "left_back_drive");
         rightBackDrive = hardwareMap.get(DcMotor.class, "right_back_drive");
-        arm = hardwareMap.get (Servo.class, "arm");
-        elevatorA = hardwareMap.get(DcMotor.class, "elevatorA");
-        elevatorB = hardwareMap.get(DcMotor.class, "elevatorB");
+        arm1 = hardwareMap.get (Servo.class, "arm1");
+        arm2 = hardwareMap.get(Servo.class, "arm2");
+        elevator = hardwareMap.get(DcMotor.class, "elevator");
         intakeA = hardwareMap.get(DcMotor.class, "intakeA");
         intakeB = hardwareMap.get(DcMotor.class, "intakeB");
 
@@ -102,6 +102,22 @@ public class TeleOpMode extends OpMode implements Constants{
         if (gamepad2.right_bumper) {
             setIntakeSpeed(-.8);
         }
+        if (gamepad2.dpad_up) {
+            moveElevator(ELEVATOR_LEVEL_ONE);
+        }
+        if (gamepad2.dpad_left) {
+            moveElevator(ELEVATOR_LEVEL_TWO);
+        }
+        if (gamepad2.dpad_right) {
+            moveElevator(ELEVATOR_LEVEL_THREE);
+        }
+        if (gamepad2.dpad_down) {
+            openIntake();
+        }
+            else {
+                closeIntake();
+        }
+
         telemetry.addData("position", -getDistance());
         telemetry.update();
 
@@ -131,7 +147,22 @@ public class TeleOpMode extends OpMode implements Constants{
         intakeA.setPower(power);
     }
 
+    private void moveElevator(double power) {
+        elevator.setPower(power);
+    }
+
+    private void openIntake() {
+        arm1.setPosition(.90);
+        arm2.setPosition(.90);
+    }
+
+    private void closeIntake() {
+        arm1.setPosition(.0);
+        arm2.setPosition(.0);
+    }
+
     private double getDistance() {
         return leftFrontDrive.getCurrentPosition();// * PPR_TO_INCHES;
     }
+
 }

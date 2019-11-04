@@ -23,6 +23,8 @@ public class AutoRedRight extends LinearOpMode implements Constants  {
         private DcMotor elevatorB = null;
         private DcMotor intakeA = null;
         private DcMotor intakeB = null;
+    private Servo clampA = null;
+    private Servo clampB = null;
 
     @Override
     public void runOpMode() {
@@ -39,6 +41,8 @@ public class AutoRedRight extends LinearOpMode implements Constants  {
         elevatorB = hardwareMap.get(DcMotor.class, "elevatorB");
         intakeA = hardwareMap.get(DcMotor.class, "intakeA");
         intakeB = hardwareMap.get(DcMotor.class, "intakeB");
+        clampA = hardwareMap.get(Servo.class, "clampA");
+        clampB = hardwareMap.get(Servo.class, "clamoB");
 
         //Default Direction Changed
         leftFrontDrive.setDirection(DcMotor.Direction.FORWARD);

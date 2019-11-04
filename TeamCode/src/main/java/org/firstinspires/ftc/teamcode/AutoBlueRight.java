@@ -25,6 +25,8 @@ public class AutoBlueRight {
         private DcMotor elevatorB = null;
         private DcMotor intakeA = null;
         private DcMotor intakeB = null;
+        private Servo arm1 = null;
+        private Servo arm2 = null;
 
         @Override
         public void runOpMode() {
@@ -41,6 +43,8 @@ public class AutoBlueRight {
             elevatorB = hardwareMap.get(DcMotor.class, "elevatorB");
             intakeA = hardwareMap.get(DcMotor.class, "intakeA");
             intakeB = hardwareMap.get(DcMotor.class, "intakeB");
+            arm1 = hardwareMap.get(Servo.class, "arm1");
+            arm2 = hardwareMap.get(Servo.class, "arm2");
 
             //Default Direction Changed
             leftFrontDrive.setDirection(DcMotor.Direction.FORWARD);
@@ -68,10 +72,6 @@ public class AutoBlueRight {
             while (opModeIsActive()) {
                 driveToDistance(INCHES_PER_SQUARE * 5);
 
-
-
-
-
             }
         }
 
@@ -93,6 +93,15 @@ public class AutoBlueRight {
             rightFrontDrive.setPower (power);
             leftBackDrive.setPower (-power);
             rightBackDrive.setPower (power);
+        }
+        private void openIntake() {
+            arm1.setPosition(.90);
+            arm2.setPosition(.90);
+        }
+
+        private void closeIntake() {
+            arm1.setPosition(.0);
+            arm2.setPosition(.0);
         }
         private void setIntakeSpeed(double power) {
             intakeB.setPower(power);
