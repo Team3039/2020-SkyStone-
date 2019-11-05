@@ -120,7 +120,8 @@ public class AutoRedLeft extends LinearOpMode implements Constants  {
         clampB.setPosition(RELEASE_FOUNDATION);
     }
 
-
+//Meme Review
+    
     //Collects Distance
     public double getDistance() {
         return leftBackDrive.getCurrentPosition() * PPR_TO_INCHES * -1; // Multiplying it by -1 isn't doing anything.
