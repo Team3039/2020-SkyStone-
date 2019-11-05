@@ -26,7 +26,7 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.firstinspires.ftc.robotcontroller.external.samples;
+package org.firstinspires.ftc.robotcontroller.external.samples.VuforiaSampleCode;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
@@ -115,7 +115,7 @@ public class ConceptVuMarkIdentificationWebcam extends LinearOpMode {
          * Once you've obtained a license key, copy the string from the Vuforia web site
          * and paste it in to your code on the next line, between the double quotes.
          */
-        parameters.vuforiaLicenseKey = " -- YOUR NEW VUFORIA KEY GOES HERE  --- ";
+        parameters.vuforiaLicenseKey = " ASgVZfn/////AAABmfEwP7kldkUZtjehilx7+p1FAoB0bQ6ce+avr6V7u2cguC1lOf6wy5hyumhll8DCMkfm1iOQowMMOF02CqsZsa4/Uzhf+Tz+EBZJ9p4Yqs+0p23q2gnXBe7oTlsHYJteP6cEyu07Ib9wEgvhPfN4g6V4+Q/6DUcmwGua630m+jXBayU0brXSZkkRG0YUiIWvfnfAzkKL7Bwl2PjMym7cXzeuIQeo2blCxObeQGp8xb67RZDR/7EMn+MNdtepGsjpZpMOrIazZM532rifxKFM7uBVPNrtCrXUip1tcwztOytgz+qK3U3U9ykn8qD180xCOyCXPKqKIY7kt/LdftuvGkOPlxMaRDIfOE2XkbkYgdC5\n ";
 
 
         /**

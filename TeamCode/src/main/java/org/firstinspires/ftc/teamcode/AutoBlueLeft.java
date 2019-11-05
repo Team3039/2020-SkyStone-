@@ -6,10 +6,10 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-public class AutoBlueLeft {
+
 
     @Autonomous
-    public class AutoRedRight extends LinearOpMode implements Constants  {
+    public class AutoBlueLeft extends LinearOpMode implements Constants  {
 
         private ElapsedTime runtime = new ElapsedTime();
 
@@ -25,6 +25,10 @@ public class AutoBlueLeft {
         private DcMotor elevatorB = null;
         private DcMotor intakeA = null;
         private DcMotor intakeB = null;
+        private Servo arm1 = null;
+        private Servo arm2 = null;
+        private Servo clampA = null;
+        private Servo clampB = null;
 
         @Override
         public void runOpMode() {
@@ -36,11 +40,14 @@ public class AutoBlueLeft {
             rightFrontDrive = hardwareMap.get(DcMotor.class, "right_front_drive");
             leftBackDrive = hardwareMap.get(DcMotor.class, "left_back_drive");
             rightBackDrive = hardwareMap.get(DcMotor.class, "right_back_drive");
-            arm = hardwareMap.get (Servo.class, "arm");
             elevatorA = hardwareMap.get(DcMotor.class, "elevatorA");
             elevatorB = hardwareMap.get(DcMotor.class, "elevatorB");
+            arm1 = hardwareMap.get(Servo.class, "arm1");
+            arm2 = hardwareMap.get(Servo.class, "arm2");
             intakeA = hardwareMap.get(DcMotor.class, "intakeA");
             intakeB = hardwareMap.get(DcMotor.class, "intakeB");
+            clampA = hardwareMap.get(Servo.class, "clampA");
+            clampB = hardwareMap.get(Servo.class, "clamoB");
 
             //Default Direction Changed
             leftFrontDrive.setDirection(DcMotor.Direction.FORWARD);
@@ -66,9 +73,8 @@ public class AutoBlueLeft {
 
             //Start of Auto Code
             while (opModeIsActive()) {
-                cycleStone1();
-                cycleStone2();
-                cycleStone3();
+                driveToDistance(INCHES_PER_SQUARE * 5);
+
             }
         }
 
@@ -91,55 +97,27 @@ public class AutoBlueLeft {
             leftBackDrive.setPower (-power);
             rightBackDrive.setPower (power);
         }
+        private void openIntake() {
+            arm1.setPosition(.90);
+            arm2.setPosition(.90);
+        }
+        private void closeIntake() {
+            arm1.setPosition(.0);
+            arm2.setPosition(.0);
+        }
         private void setIntakeSpeed(double power) {
             intakeB.setPower(power);
             intakeA.setPower(power);
         }
-        private void cycleStone1() {
-            driveToDistance(INCHES_PER_SQUARE * 2);
-            turnRight(NINETY_TURN);
-            driveToDistance(INCHES_PER_SQUARE * 1.5);
-            turnLeft(NINETY_TURN);
-            driveToDistance(INCHES_PER_SQUARE/4);
-            setIntakeSpeed(.75);
-            //-------------------------Make the wheels stop
-            driveToDistance(-INCHES_PER_SQUARE/4);
-            turnLeft(NINETY_TURN);
-            driveToDistance(INCHES_PER_SQUARE * 3);
-            setIntakeSpeed(-.75);
-            turnRight(NINETY_TURN);
-            driveToDistance(-INCHES_PER_SQUARE * 2);
+        private void clampFoundation() {
+            clampA.setPosition(CLAMP_FOUNDATION);
+            clampB.setPosition(CLAMP_FOUNDATION);
         }
-        private void cycleStone2() {
-            driveToDistance(INCHES_PER_SQUARE * 2);
-            turnRight(NINETY_TURN);
-            driveToDistance(INCHES_PER_SQUARE * 2);
-            turnLeft(NINETY_TURN);
-            driveToDistance(INCHES_PER_SQUARE/4);
-            setIntakeSpeed(.75);
-            //-------------------------Make the wheels stop
-            driveToDistance(-INCHES_PER_SQUARE/4);
-            turnLeft(NINETY_TURN);
-            driveToDistance(INCHES_PER_SQUARE * 3.5);
-            setIntakeSpeed(-.75);
-            turnRight(NINETY_TURN);
-            driveToDistance(-INCHES_PER_SQUARE * 2);
+        private void releaseFoundation() {
+            clampA.setPosition(RELEASE_FOUNDATION);
+            clampB.setPosition(RELEASE_FOUNDATION);
         }
-        private void cycleStone3() {
-            driveToDistance(INCHES_PER_SQUARE * 2);
-            turnRight(NINETY_TURN);
-            driveToDistance(INCHES_PER_SQUARE * 2.5);
-            turnLeft(NINETY_TURN);
-            driveToDistance(INCHES_PER_SQUARE/4);
-            setIntakeSpeed(.75);
-            //-------------------------Make the wheels stop
-            driveToDistance(-INCHES_PER_SQUARE/4);
-            turnLeft(NINETY_TURN);
-            driveToDistance(INCHES_PER_SQUARE * 3);
-            setIntakeSpeed(-.75);
-            turnRight(NINETY_TURN);
-            driveToDistance(-INCHES_PER_SQUARE * 2);
-        }
+
 
 
         //Collects Distance
@@ -194,4 +172,4 @@ public class AutoBlueLeft {
     }
 
 
-}
+
