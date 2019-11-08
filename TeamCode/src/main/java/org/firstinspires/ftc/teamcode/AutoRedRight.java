@@ -19,11 +19,21 @@ public class AutoRedRight extends LinearOpMode implements Constants  {
 
 
         //Gamepiece Motors
+<<<<<<< HEAD
 //        private Servo arm = null;
 //        private DcMotor elevatorA = null;
 //        private DcMotor elevatorB = null;
 //        private DcMotor intakeA = null;
 //        private DcMotor intakeB = null;
+=======
+        private Servo arm = null;
+        private DcMotor elevatorA = null;
+        private DcMotor elevatorB = null;
+        private DcMotor intakeA = null;
+        private DcMotor intakeB = null;
+    private Servo clampA = null;
+    private Servo clampB = null;
+>>>>>>> ebe0ab0e9f3f0ddf48200ecae3dd6de702166016
 
     @Override
     public void runOpMode() {
@@ -37,11 +47,21 @@ public class AutoRedRight extends LinearOpMode implements Constants  {
         rightFrontDrive = hardwareMap.get(DcMotor.class, "right_front_drive");
         leftBackDrive = hardwareMap.get(DcMotor.class, "left_back_drive");
         rightBackDrive = hardwareMap.get(DcMotor.class, "right_back_drive");
+<<<<<<< HEAD
 //        arm = hardwareMap.get (Servo.class, "arm");
 //        elevatorA = hardwareMap.get(DcMotor.class, "elevatorA");
 //        elevatorB = hardwareMap.get(DcMotor.class, "elevatorB");
 //        intakeA = hardwareMap.get(DcMotor.class, "intakeA");
 //        intakeB = hardwareMap.get(DcMotor.class, "intakeB");
+=======
+        arm = hardwareMap.get (Servo.class, "arm");
+        elevatorA = hardwareMap.get(DcMotor.class, "elevatorA");
+        elevatorB = hardwareMap.get(DcMotor.class, "elevatorB");
+        intakeA = hardwareMap.get(DcMotor.class, "intakeA");
+        intakeB = hardwareMap.get(DcMotor.class, "intakeB");
+        clampA = hardwareMap.get(Servo.class, "clampA");
+        clampB = hardwareMap.get(Servo.class, "clamoB");
+>>>>>>> ebe0ab0e9f3f0ddf48200ecae3dd6de702166016
 
         //Default Direction Changed
         leftFrontDrive.setDirection(DcMotor.Direction.FORWARD);
