@@ -180,11 +180,11 @@ public class TeleOpMode extends OpMode implements Constants{
     }
 
     private double getDistance() {
-        return leftFrontDrive.getCurrentPosition() * PPR_TO_INCHES;
+        return rightBackDrive.getCurrentPosition() * PPR_TO_INCHES;
     }
 
     public void resetEncoder() {
-        leftBackDrive.setTargetPosition(0);
+        rightBackDrive.setTargetPosition(0);
     }
 
     public void driveToDistance(double distance) {
