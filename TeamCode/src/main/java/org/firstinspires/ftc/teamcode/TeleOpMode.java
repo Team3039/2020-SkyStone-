@@ -97,7 +97,7 @@ public class TeleOpMode extends OpMode implements Constants{
        else if (gamepad1.right_bumper) {
             strafeRight(.8);
         }
-        else {
+       else {
             leftOutput = Range.clip(drive + turn, -.95, .95);
             rightOutput = Range.clip(drive - turn, -.95, .95);
 
@@ -106,31 +106,32 @@ public class TeleOpMode extends OpMode implements Constants{
             leftBackDrive.setPower(leftOutput);
             rightBackDrive.setPower(rightOutput);
         }
-        if (gamepad2.left_bumper) {
-            setIntakeSpeed(.8);
-        }
-        if (gamepad2.right_bumper) {
-            setIntakeSpeed(-.8);
-        }
-        if (gamepad2.y) {
+       if (gamepad2.left_bumper) {
+            shootStone();
+       }
+       if (gamepad2.right_bumper) {
+            intakeStone();
+       }
+       if (gamepad2.y) {
             openIntake();
+       }
+       else {
+            closeIntake();
+       }
+
+       moveElevator(gamepad2.right_stick_y * Constants.ELEVATOR_GAIN);
+       tiltElevator( Range.clip(gamepad2.left_stick_y, 0, 1));
+
+
+        if ((lowerLimit.isPressed()) && (gamepad2.right_stick_y < 0)) {
+            moveElevator(0);
+        }
+        else if((elevator.getCurrentPosition() > Constants.UPPER_LIMIT) && (gamepad2.right_stick_y >0)) {
+            moveElevator(0);
         }
         else {
-            closeIntake();
-        }
-
-        moveElevator(gamepad2.right_stick_y);
-        dropIntake(gamepad2.left_stick_y);
-
-       // elevatorTilt.setPosition(gamepad2.left_stick_y);
-       // dropIntake(gamepad2.left_stick_y);
-
-         if (lowerLimit.isPressed() && (gamepad2.right_stick_y < 0)) {
-             moveElevator(0);
-        }
-         else {
              moveElevator(gamepad2.right_stick_y);
-         }
+        }
 
         telemetry.addData("position", -getDistance());
         telemetry.update();
@@ -152,27 +153,35 @@ public class TeleOpMode extends OpMode implements Constants{
         rightBackDrive.setPower(strafeSpeed);
     }
     private void setIntakeSpeed(double power) {
-//        intakeB.setPower(power);
-//        intakeA.setPower(power);
+        intakeB.setPower(power);
+        intakeA.setPower(power);
     }
     private void moveElevator(double power) {
         elevator.setPower(power);
     }
     private void openIntake() {
-        leftIntake.setPosition(180);
-        rightIntake.setPosition(180);
+        leftIntake.setPosition(Constants.INTAKE_OPEN);
+        rightIntake.setPosition(Constants.INTAKE_OPEN);
     }
     private void closeIntake() {
-        leftIntake.setPosition(0);
-        rightIntake.setPosition(0);
+        leftIntake.setPosition(Constants.INTAKE_CLOSE);
+        rightIntake.setPosition(Constants.INTAKE_CLOSE);
     }
-    private void dropIntake(double position) {
+    private void tiltElevator(double position) {
         elevatorTilt.setPosition(position);
     }
-    private double getDistance() {
-        return leftFrontDrive.getCurrentPosition();// * PPR_TO_INCHES;
+
+    private void shootStone() {
+        setIntakeSpeed(Constants.SHOOT_SPEED);
     }
-    //Main movement method to be called nearly  every time we want to move linearly
+
+    private void intakeStone() {
+        setIntakeSpeed(Constants.INTAKE_SPEED);
+    }
+
+    private double getDistance() {
+        return leftFrontDrive.getCurrentPosition() * PPR_TO_INCHES;
+    }
 
     public void resetEncoder() {
         leftBackDrive.setTargetPosition(0);
