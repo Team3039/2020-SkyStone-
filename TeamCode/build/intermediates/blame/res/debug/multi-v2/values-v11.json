@@ -1,0 +1,20 @@
+{
+    "logs": [
+        {
+            "outputFile": "C:\\workspace\\2020-SkyStone-\\TeamCode\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-v11\\values-v11.xml",
+            "map": [
+                {
+                    "source": "C:\\Users\\teflo\\.gradle\\caches\\transforms-2\\files-2.1\\2b32fa1e497dcfe86a4b716c9283e373\\RobotCore-release\\res\\values-v11\\values-v11.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endLines": "4",
+                        "endColumns": "12",
+                        "endOffsets": "187"
+                    }
+                }
+            ]
+        }
+    ]
+}

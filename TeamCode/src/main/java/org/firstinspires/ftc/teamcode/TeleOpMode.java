@@ -41,8 +41,10 @@ public class TeleOpMode extends OpMode implements Constants{
         rightFrontDrive = hardwareMap.get(DcMotor.class, "right_front_drive");
         leftBackDrive = hardwareMap.get(DcMotor.class, "left_back_drive");
         rightBackDrive = hardwareMap.get(DcMotor.class, "right_back_drive");
+
         leftIntake = hardwareMap.get (Servo.class, "arm1");
         rightIntake = hardwareMap.get(Servo.class, "arm2");
+
         elevator = hardwareMap.get(DcMotor.class, "elevator");
         intakeA = hardwareMap.get(DcMotor.class, "intakeA");
         intakeB = hardwareMap.get(DcMotor.class, "intakeB");
@@ -150,8 +152,8 @@ public class TeleOpMode extends OpMode implements Constants{
         rightBackDrive.setPower(strafeSpeed);
     }
     private void setIntakeSpeed(double power) {
-        intakeB.setPower(power);
-        intakeA.setPower(power);
+//        intakeB.setPower(power);
+//        intakeA.setPower(power);
     }
     private void moveElevator(double power) {
         elevator.setPower(power);
@@ -170,5 +172,48 @@ public class TeleOpMode extends OpMode implements Constants{
     private double getDistance() {
         return leftFrontDrive.getCurrentPosition();// * PPR_TO_INCHES;
     }
+    //Main movement method to be called nearly  every time we want to move linearly
+
+    public void resetEncoder() {
+        leftBackDrive.setTargetPosition(0);
+    }
+
+    public void driveToDistance(double distance) {
+        resetEncoder();
+        int distanceForMotor = (int) (distance * COUNTS_PER_INCH); //This should convert the distance we collect back to what the motor reads
+
+        leftBackDrive.setTargetPosition(distanceForMotor);
+        leftBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftFrontDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightFrontDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        driveRaw(.99);
+
+        while (leftBackDrive.isBusy()) {
+            telemetry.addData("Current Position", leftBackDrive.getCurrentPosition());
+            telemetry.addData("Target Position: ", leftBackDrive.getTargetPosition());
+            telemetry.update();
+        }
+    }
+    //Raw Driving Methods
+    public void driveRaw(double power) {
+        leftFrontDrive.setPower(power);
+        rightFrontDrive.setPower(power);
+        leftBackDrive.setPower(power);
+        rightBackDrive.setPower(power);
+    }
+    public void turnLeft (double power){
+        leftFrontDrive.setPower (power);
+        rightFrontDrive.setPower (-power);
+        leftBackDrive.setPower (power);
+        rightBackDrive.setPower (-power);
+    }
+    public void turnRight (double power) {
+        leftFrontDrive.setPower(-power);
+        rightFrontDrive.setPower(power);
+        leftBackDrive.setPower(-power);
+        rightBackDrive.setPower(power);
+    }
+
 
 }
