@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "C:\\Users\\WildcatRobotics\\androidstudio-workspace\\2020-SkyStone\\TeamCode\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-v14\\values-v14.xml",
+            "outputFile": "C:\\workspace\\2020-SkyStone-\\TeamCode\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-v14\\values-v14.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\WildcatRobotics\\.gradle\\caches\\transforms-2\\files-2.1\\2b32fa1e497dcfe86a4b716c9283e373\\RobotCore-release\\res\\values-v14\\values-v14.xml",
+                    "source": "C:\\Users\\teflo\\.gradle\\caches\\transforms-2\\files-2.1\\2b32fa1e497dcfe86a4b716c9283e373\\RobotCore-release\\res\\values-v14\\values-v14.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",

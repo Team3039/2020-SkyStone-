@@ -20,19 +20,11 @@ public class TeleOpMode extends OpMode implements Constants{
     private DcMotor rightBackDrive = null;
 
     //Gamepiece Motors
-<<<<<<< HEAD
-//    private Servo arm = null;
-//    private DcMotor elevatorA = null;
-//    private DcMotor elevatorB = null;
-//    private DcMotor intakeA = null;
-//    private DcMotor intakeB = null;
-=======
     private Servo arm1 = null;
     private Servo arm2 = null;
     private DcMotor elevator = null;
     private DcMotor intakeA = null;
     private DcMotor intakeB = null;
->>>>>>> ebe0ab0e9f3f0ddf48200ecae3dd6de702166016
 
 
 //    private DcMotor elevator = hardwareMap.get (DcMotor.class, "elevator") ;
@@ -44,19 +36,12 @@ public class TeleOpMode extends OpMode implements Constants{
         rightFrontDrive = hardwareMap.get(DcMotor.class, "right_front_drive");
         leftBackDrive = hardwareMap.get(DcMotor.class, "left_back_drive");
         rightBackDrive = hardwareMap.get(DcMotor.class, "right_back_drive");
-<<<<<<< HEAD
-//        arm = hardwareMap.get (Servo.class, "arm");
-//        elevatorA = hardwareMap.get(DcMotor.class, "elevatorA");
-//        elevatorB = hardwareMap.get(DcMotor.class, "elevatorB");
-//               intakeA = hardwareMap.get(DcMotor.class, "intakeA");
-//        intakeB = hardwareMap.get(DcMotor.class, "intakeB");
-=======
+
         arm1 = hardwareMap.get (Servo.class, "arm1");
         arm2 = hardwareMap.get(Servo.class, "arm2");
         elevator = hardwareMap.get(DcMotor.class, "elevator");
         intakeA = hardwareMap.get(DcMotor.class, "intakeA");
         intakeB = hardwareMap.get(DcMotor.class, "intakeB");
->>>>>>> ebe0ab0e9f3f0ddf48200ecae3dd6de702166016
 
         leftFrontDrive.setDirection(DcMotor.Direction.FORWARD);
         rightFrontDrive.setDirection(DcMotor.Direction.REVERSE);
