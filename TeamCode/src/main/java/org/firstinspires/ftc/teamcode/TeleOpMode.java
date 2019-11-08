@@ -25,10 +25,11 @@ public class TeleOpMode extends OpMode implements Constants{
     private Servo leftIntake = null;
     private Servo rightIntake = null;
     private Servo elevatorTilt = null;
+    private Servo clampA = null;
+    private Servo clampB = null;
     private DcMotor elevator = null;
     private DcMotor intakeA = null;
     private DcMotor intakeB = null;
-    private TouchSensor upperLimit = null;
     private TouchSensor lowerLimit = null;
 
 
@@ -37,19 +38,19 @@ public class TeleOpMode extends OpMode implements Constants{
     @Override
     public void init() {
         //telemetry and hardwareMap stuff goes in this method.
-        leftFrontDrive = hardwareMap.get(DcMotor.class, "left_front_drive");
-        rightFrontDrive = hardwareMap.get(DcMotor.class, "right_front_drive");
-        leftBackDrive = hardwareMap.get(DcMotor.class, "left_back_drive");
-        rightBackDrive = hardwareMap.get(DcMotor.class, "right_back_drive");
-
-        leftIntake = hardwareMap.get (Servo.class, "arm1");
-        rightIntake = hardwareMap.get(Servo.class, "arm2");
+        leftFrontDrive = hardwareMap.get(DcMotor.class, "leftFrontDrive");
+        rightFrontDrive = hardwareMap.get(DcMotor.class, "rightFrontDrive");
+        leftBackDrive = hardwareMap.get(DcMotor.class, "leftBackDrive");
+        rightBackDrive = hardwareMap.get(DcMotor.class, "rightBackDrive");
+        leftIntake = hardwareMap.get (Servo.class, "leftIntake");
+        rightIntake = hardwareMap.get(Servo.class, "rightIntake");
 
         elevator = hardwareMap.get(DcMotor.class, "elevator");
         intakeA = hardwareMap.get(DcMotor.class, "intakeA");
         intakeB = hardwareMap.get(DcMotor.class, "intakeB");
         elevatorTilt = hardwareMap.get(Servo.class, "elevatorTilt");
-        upperLimit = hardwareMap.get(TouchSensor.class, "upperLimit");
+        clampA = hardwareMap.get(Servo.class, "clampA");
+        clampB = hardwareMap.get(Servo.class, "clampB");
         lowerLimit = hardwareMap.get(TouchSensor.class, "lowerLimit");
 
         leftFrontDrive.setDirection(DcMotor.Direction.FORWARD);
@@ -90,11 +91,19 @@ public class TeleOpMode extends OpMode implements Constants{
         double turn = -gamepad1.right_stick_x * .5;
         //Encoder
         getDistance();
+        telemetry.addData("elevator_position", elevator.getCurrentPosition());
+        telemetry.update();
 
-       if (gamepad1.left_bumper) {
+        if (gamepad1.x) {
+            clampPlatform();
+        }
+        else if (gamepad1.y) {
+            releasePlatform();
+        }
+       if (gamepad1.left_trigger > .1) {
             strafeLeft(.8);
        }
-       else if (gamepad1.right_bumper) {
+        else if (gamepad1.right_trigger > .1) {
             strafeRight(.8);
         }
        else {
@@ -105,33 +114,52 @@ public class TeleOpMode extends OpMode implements Constants{
             rightFrontDrive.setPower(rightOutput);
             leftBackDrive.setPower(leftOutput);
             rightBackDrive.setPower(rightOutput);
-        }
-       if (gamepad2.left_bumper) {
-            shootStone();
        }
-       if (gamepad2.right_bumper) {
-            intakeStone();
+       if (gamepad2.left_stick_button) {
+           intakeA.setPower(Constants.SHOOT_SPEED * -1);
+           intakeB.setPower(Constants.SHOOT_SPEED);
        }
-       if (gamepad2.y) {
-            openIntake();
+        else if (gamepad2.right_stick_button) {
+            intakeA.setPower(Constants.INTAKE_SPEED * -1);
+            intakeB.setPower(Constants.INTAKE_SPEED);
        }
        else {
-            closeIntake();
+           intakeA.setPower(0);
+           intakeB.setPower(0);
        }
-
-       moveElevator(gamepad2.right_stick_y * Constants.ELEVATOR_GAIN);
-       tiltElevator( Range.clip(gamepad2.left_stick_y, 0, 1));
-
-
-        if ((lowerLimit.isPressed()) && (gamepad2.right_stick_y < 0)) {
-            moveElevator(0);
-        }
-        else if((elevator.getCurrentPosition() > Constants.UPPER_LIMIT) && (gamepad2.right_stick_y >0)) {
-            moveElevator(0);
-        }
+       if (gamepad2.x) {
+           leftIntake.setPosition(1);
+           rightIntake.setPosition(1);
+       }
+       if (gamepad2.y) {
+           leftIntake.setPosition(0);
+           rightIntake.setPosition(0);
+       }
+       if (gamepad2.b) {
+           clampPlatform();
+       }
+        else if (gamepad2.a) {
+            releasePlatform();
+       }
+       if (lowerLimit.isPressed()) {
+            elevator.setPower(0);
+       }
         else {
-             moveElevator(gamepad2.right_stick_y);
+            moveElevator(gamepad2.right_stick_y * -1 * Constants.ELEVATOR_GAIN);
         }
+
+       tiltElevator( Range.clip(gamepad2.left_stick_y * -1, 0, 1));
+
+
+//        if ((lowerLimit.isPressed()) && (gamepad2.right_stick_y < 0)) {
+//            moveElevator(0);
+//        }
+//        else if((elevator.getCurrentPosition() > Constants.UPPER_LIMIT) && (gamepad2.right_stick_y >0)) {
+//            moveElevator(0);
+//        }
+//        else {
+//             moveElevator(gamepad2.right_stick_y);
+//        }
 
         telemetry.addData("position", -getDistance());
         telemetry.update();
@@ -159,14 +187,14 @@ public class TeleOpMode extends OpMode implements Constants{
     private void moveElevator(double power) {
         elevator.setPower(power);
     }
-    private void openIntake() {
-        leftIntake.setPosition(Constants.INTAKE_OPEN);
-        rightIntake.setPosition(Constants.INTAKE_OPEN);
+/*    private void openIntake() {
+        leftIntake.setPosition(0);
+        rightIntake.setPosition(0);
     }
     private void closeIntake() {
-        leftIntake.setPosition(Constants.INTAKE_CLOSE);
-        rightIntake.setPosition(Constants.INTAKE_CLOSE);
-    }
+        leftIntake.setPosition(1);
+        rightIntake.setPosition(1);
+    }*/
     private void tiltElevator(double position) {
         elevatorTilt.setPosition(position);
     }
@@ -179,6 +207,14 @@ public class TeleOpMode extends OpMode implements Constants{
         setIntakeSpeed(Constants.INTAKE_SPEED);
     }
 
+    private void clampPlatform() {
+        clampA.setPosition(1);
+        clampB.setPosition(1);
+    }
+    private void releasePlatform() {
+        clampA.setPosition(0);
+        clampB.setPosition(0);
+    }
     private double getDistance() {
         return rightBackDrive.getCurrentPosition() * PPR_TO_INCHES;
     }
