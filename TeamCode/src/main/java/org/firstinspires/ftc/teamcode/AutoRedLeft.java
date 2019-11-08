@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Autonomous
@@ -19,14 +20,15 @@ public class AutoRedLeft extends LinearOpMode implements Constants  {
 
         //Gamepiece Motors
         private Servo arm = null;
-        private DcMotor elevatorA = null;
-        private DcMotor elevatorB = null;
+        private DcMotor elevator = null;
         private DcMotor intakeA = null;
         private DcMotor intakeB = null;
         private Servo arm1 = null;
         private Servo arm2 = null;
         private Servo clampA = null;
         private Servo clampB = null;
+        private TouchSensor upperLimit = null;
+        private TouchSensor lowerLimit = null;
 
     @Override
     public void runOpMode() {
@@ -40,12 +42,13 @@ public class AutoRedLeft extends LinearOpMode implements Constants  {
         rightBackDrive = hardwareMap.get(DcMotor.class, "right_back_drive");
         arm1 = hardwareMap.get (Servo.class, "arm1");
         arm2 = hardwareMap.get(Servo.class, "arm2");
-        elevatorA = hardwareMap.get(DcMotor.class, "elevatorA");
-        elevatorB = hardwareMap.get(DcMotor.class, "elevatorB");
+        elevator = hardwareMap.get(DcMotor.class, "elevatorA");
         intakeA = hardwareMap.get(DcMotor.class, "intakeA");
         intakeB = hardwareMap.get(DcMotor.class, "intakeB");
         clampA = hardwareMap.get(Servo.class, "clampA");
         clampB = hardwareMap.get(Servo.class, "clamoB");
+        upperLimit = hardwareMap.get(TouchSensor.class, "upperLimit");
+        lowerLimit = hardwareMap.get(TouchSensor.class, "lowerLimit");
 
         //Default Direction Changed
         leftFrontDrive.setDirection(DcMotor.Direction.FORWARD);
@@ -119,9 +122,12 @@ public class AutoRedLeft extends LinearOpMode implements Constants  {
         clampA.setPosition(RELEASE_FOUNDATION);
         clampB.setPosition(RELEASE_FOUNDATION);
     }
+    private void moveElevator(double power) {
+        elevator.setPower(power);
+    }
 
 //Meme Review
-    
+
     //Collects Distance
     public double getDistance() {
         return leftBackDrive.getCurrentPosition() * PPR_TO_INCHES * -1; // Multiplying it by -1 isn't doing anything.

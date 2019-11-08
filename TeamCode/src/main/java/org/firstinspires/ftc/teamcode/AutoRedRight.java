@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
@@ -21,12 +22,13 @@ import com.qualcomm.robotcore.util.ElapsedTime;
         //Gamepiece Motors
         private DcMotor intakeA = null;
         private DcMotor intakeB = null;
-        private DcMotor elevatorA = null;
-        private DcMotor elevatorB = null;
+        private DcMotor elevator = null;
         private Servo arm1 = null;
         private Servo arm2 = null;
         private Servo clampA = null;
         private Servo clampB = null;
+        private TouchSensor upperLimit = null;
+        private TouchSensor lowerLimit = null;
 
         //Switches
 
@@ -42,14 +44,15 @@ import com.qualcomm.robotcore.util.ElapsedTime;
             rightFrontDrive = hardwareMap.get(DcMotor.class, "right_front_drive");
             leftBackDrive = hardwareMap.get(DcMotor.class, "left_back_drive");
             rightBackDrive = hardwareMap.get(DcMotor.class, "right_back_drive");
-            elevatorA = hardwareMap.get(DcMotor.class, "elevatorA");
-            elevatorB = hardwareMap.get(DcMotor.class, "elevatorB");
+            elevator = hardwareMap.get(DcMotor.class, "elevatorA");
             arm1 = hardwareMap.get(Servo.class, "arm1");
             arm2 = hardwareMap.get(Servo.class, "arm2");
             intakeA = hardwareMap.get(DcMotor.class, "intakeA");
             intakeB = hardwareMap.get(DcMotor.class, "intakeB");
             clampA = hardwareMap.get(Servo.class, "clampA");
             clampB = hardwareMap.get(Servo.class, "clamoB");
+            upperLimit = hardwareMap.get(TouchSensor.class, "upperLimit");
+            lowerLimit = hardwareMap.get(TouchSensor.class, "lowerLimit");
 
             //Default Direction Changed
             leftFrontDrive.setDirection(DcMotor.Direction.FORWARD);
@@ -136,7 +139,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
             driveToDistance(INCHES_PER_SQUARE/4);
             setIntakeSpeed(.75);
             //limit switch stuff   setIntakeSpeed(0);
-            driveToDistance(-INCHES_PER_SQUARE/4);
+            driveToDistance(-12);
             turnLeft(NINETY_TURN);
             driveToDistance(INCHES_PER_SQUARE * 3.5);
             setIntakeSpeed(-.75);
@@ -152,7 +155,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
             driveToDistance(INCHES_PER_SQUARE/4);
             setIntakeSpeed(.75);
             //limit switch stuff   setIntakeSpeed(0);
-            driveToDistance(-INCHES_PER_SQUARE/4);
+            driveToDistance(-12);
             turnRight(NINETY_TURN);
             driveToDistance(INCHES_PER_SQUARE * 3);
             setIntakeSpeed(-.75);
@@ -167,6 +170,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
         private void releaseFoundation() {
             clampA.setPosition(RELEASE_FOUNDATION);
             clampB.setPosition(RELEASE_FOUNDATION);
+        }
+        private void moveElevator(double power) {
+            elevator.setPower(power);
         }
 
 
