@@ -22,11 +22,11 @@ public class TeleOpMode extends OpMode implements Constants{
     private DcMotor rightBackDrive = null;
 
     //Gamepiece Motors
-    private Servo leftIntake = null;
-    private Servo rightIntake = null;
-    private Servo elevatorTilt = null;
-    private Servo clampA = null;
-    private Servo clampB = null;
+    private Servo leftIntake;
+    private Servo rightIntake;
+    private Servo elevatorTilt;
+    private Servo clampA;
+    private Servo clampB;
     private DcMotor elevator = null;
     private DcMotor intakeA = null;
     private DcMotor intakeB = null;
@@ -115,25 +115,27 @@ public class TeleOpMode extends OpMode implements Constants{
             leftBackDrive.setPower(leftOutput);
             rightBackDrive.setPower(rightOutput);
        }
-       if (gamepad2.left_stick_button) {
-           intakeA.setPower(Constants.SHOOT_SPEED * -1);
-           intakeB.setPower(Constants.SHOOT_SPEED);
+       if (gamepad2.left_trigger > .1) {
+//           intakeA.setPower(Constants.SHOOT_SPEED * -1);
+//           intakeB.setPower(Constants.SHOOT_SPEED);
+           closeIntake();
        }
-        else if (gamepad2.right_stick_button) {
-            intakeA.setPower(Constants.INTAKE_SPEED * -1);
-            intakeB.setPower(Constants.INTAKE_SPEED);
+        else if (gamepad2.right_trigger > .1) {
+//            intakeA.setPower(Constants.INTAKE_SPEED * -1);
+//            intakeB.setPower(Constants.INTAKE_SPEED);
+           openIntake();
        }
        else {
            intakeA.setPower(0);
            intakeB.setPower(0);
        }
        if (gamepad2.x) {
-           leftIntake.setPosition(1);
-           rightIntake.setPosition(1);
+        openIntake();
+        System.out.println("Open Intake");
        }
        if (gamepad2.y) {
-           leftIntake.setPosition(0);
-           rightIntake.setPosition(0);
+        closeIntake();
+        System.out.println("Close Intake");
        }
        if (gamepad2.b) {
            clampPlatform();
@@ -187,14 +189,14 @@ public class TeleOpMode extends OpMode implements Constants{
     private void moveElevator(double power) {
         elevator.setPower(power);
     }
-/*    private void openIntake() {
+    private void openIntake() {
         leftIntake.setPosition(0);
         rightIntake.setPosition(0);
     }
     private void closeIntake() {
         leftIntake.setPosition(1);
         rightIntake.setPosition(1);
-    }*/
+    }
     private void tiltElevator(double position) {
         elevatorTilt.setPosition(position);
     }
