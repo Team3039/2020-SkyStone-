@@ -11,19 +11,20 @@ import com.qualcomm.robotcore.util.Range;
 
 @TeleOp(name="TeleOpMode", group="Iterative Opmode")
 
-public class TeleOpMode extends OpMode implements Constants{
+public class TeleOpMode extends OpMode implements Constants {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
 
-    //Driivetrain Motors
+    //Drivetrain Motors
     private DcMotor leftFrontDrive = null;
     private DcMotor rightFrontDrive = null;
     private DcMotor leftBackDrive = null;
     private DcMotor rightBackDrive = null;
+    private DcMotor leftIntake = null;
+    //private DcMotor rightIntake = null;
 
     //Gamepiece Motors
-    private Servo leftIntake;
-    private Servo rightIntake;
+
     private Servo elevatorTilt;
     private Servo clampA;
     private Servo clampB;
@@ -42,8 +43,9 @@ public class TeleOpMode extends OpMode implements Constants{
         rightFrontDrive = hardwareMap.get(DcMotor.class, "rightFrontDrive");
         leftBackDrive = hardwareMap.get(DcMotor.class, "leftBackDrive");
         rightBackDrive = hardwareMap.get(DcMotor.class, "rightBackDrive");
-        leftIntake = hardwareMap.get (Servo.class, "leftIntake");
-        rightIntake = hardwareMap.get(Servo.class, "rightIntake");
+        leftIntake = hardwareMap.get(DcMotor.class, "leftIntake");
+        //rightIntake = hardwareMap.get(DcMotor.class, "rightIntake");
+
 
         elevator = hardwareMap.get(DcMotor.class, "elevator");
         intakeA = hardwareMap.get(DcMotor.class, "intakeA");
@@ -76,6 +78,7 @@ public class TeleOpMode extends OpMode implements Constants{
         //   elevator.setPower(power);
         //}
     }
+
     @Override
     public void start() {
         runtime.reset();
@@ -90,23 +93,20 @@ public class TeleOpMode extends OpMode implements Constants{
         double drive = gamepad1.left_stick_y * .9;
         double turn = -gamepad1.right_stick_x * .5;
         //Encoder
-        getDistance();
-        telemetry.addData("elevator_position", elevator.getCurrentPosition());
-        telemetry.update();
+        //   getDistance();
+        //   telemetry.addData("elevator_position", elevator.getCurrentPosition());
+        //   telemetry.update();
 
         if (gamepad1.x) {
             clampPlatform();
-        }
-        else if (gamepad1.y) {
+        } else if (gamepad1.y) {
             releasePlatform();
         }
-       if (gamepad1.left_trigger > .1) {
+        if (gamepad1.left_trigger > .1) {
             strafeLeft(.8);
-       }
-        else if (gamepad1.right_trigger > .1) {
+        } else if (gamepad1.right_trigger > .1) {
             strafeRight(.8);
-        }
-       else {
+        } else {
             leftOutput = Range.clip(drive + turn, -.95, .95);
             rightOutput = Range.clip(drive - turn, -.95, .95);
 
@@ -114,44 +114,33 @@ public class TeleOpMode extends OpMode implements Constants{
             rightFrontDrive.setPower(rightOutput);
             leftBackDrive.setPower(leftOutput);
             rightBackDrive.setPower(rightOutput);
-       }
-       if (gamepad2.left_trigger > .1) {
-//           intakeA.setPower(Constants.SHOOT_SPEED * -1);
-//           intakeB.setPower(Constants.SHOOT_SPEED);
-           closeIntake();
-       }
-        else if (gamepad2.right_trigger > .1) {
-//            intakeA.setPower(Constants.INTAKE_SPEED * -1);
-//            intakeB.setPower(Constants.INTAKE_SPEED);
-           openIntake();
-       }
-       else {
-           intakeA.setPower(0);
-           intakeB.setPower(0);
-       }
-       if (gamepad2.x) {
-        openIntake();
-        System.out.println("Open Intake");
-       }
-       if (gamepad2.y) {
-        closeIntake();
-        System.out.println("Close Intake");
-       }
-       if (gamepad2.b) {
-           clampPlatform();
-       }
-        else if (gamepad2.a) {
-            releasePlatform();
-       }
-       if (lowerLimit.isPressed()) {
-            elevator.setPower(0);
-       }
-        else {
-            moveElevator(gamepad2.right_stick_y * -1 * Constants.ELEVATOR_GAIN);
         }
+        if (gamepad2.left_trigger > .1) {
+            intakeA.setPower(Constants.SHOOT_SPEED * -1);
+            intakeB.setPower(Constants.SHOOT_SPEED);
+        } else if (gamepad2.right_trigger > .1) {
+            intakeA.setPower(Constants.INTAKE_SPEED * -1);
+            intakeB.setPower(Constants.INTAKE_SPEED);
+        } else {
+            intakeA.setPower(0);
+            intakeB.setPower(0);
+        }
+        if (gamepad2.x) {
+            openIntake();
+            System.out.println("Open Intake");
+        }
+        if (gamepad2.y) {
+            closeIntake();
+            System.out.println("Close Intake");
+        }
+        if (lowerLimit.isPressed()) {
+            elevator.setPower(0.2);
+        } else {
 
-       tiltElevator( Range.clip(gamepad2.left_stick_y * -1, 0, 1));
+            moveElevator(gamepad2.right_stick_y * -1 * Constants.ELEVATOR_GAIN);
 
+            tiltElevator(Range.clip(gamepad2.left_stick_y * -1, 0, 1));
+        }
 
 //        if ((lowerLimit.isPressed()) && (gamepad2.right_stick_y < 0)) {
 //            moveElevator(0);
@@ -163,99 +152,116 @@ public class TeleOpMode extends OpMode implements Constants{
 //             moveElevator(gamepad2.right_stick_y);
 //        }
 
-        telemetry.addData("position", -getDistance());
+        telemetry.addData("position", getDistance());
         telemetry.update();
     }
 
     @Override
     public void stop() {
     }
+
     private void strafeRight(double strafeSpeed) {
         leftFrontDrive.setPower(-strafeSpeed);
         leftBackDrive.setPower(strafeSpeed);
         rightFrontDrive.setPower(strafeSpeed);
         rightBackDrive.setPower(-strafeSpeed);
     }
+
     private void strafeLeft(double strafeSpeed) {
         leftFrontDrive.setPower(strafeSpeed);
         leftBackDrive.setPower(-strafeSpeed);
         rightFrontDrive.setPower(-strafeSpeed);
         rightBackDrive.setPower(strafeSpeed);
     }
+
     private void setIntakeSpeed(double power) {
         intakeB.setPower(power);
         intakeA.setPower(power);
     }
+
     private void moveElevator(double power) {
         elevator.setPower(power);
     }
+
     private void openIntake() {
-        leftIntake.setPosition(0);
-        rightIntake.setPosition(0);
+        leftIntake.setPower(.9);
+        //rightIntake.setPower(1);
     }
+
     private void closeIntake() {
-        leftIntake.setPosition(1);
-        rightIntake.setPosition(1);
+        leftIntake.setPower(-.9);
+        //rightIntake.setPower(0);
     }
+
     private void tiltElevator(double position) {
         elevatorTilt.setPosition(position);
     }
 
-    private void shootStone() {
-        setIntakeSpeed(Constants.SHOOT_SPEED);
-    }
 
-    private void intakeStone() {
-        setIntakeSpeed(Constants.INTAKE_SPEED);
-    }
+    /* private void shootStone() {*/
+    /*     setIntakeSpeed(Constants.SHOOT_SPEED);*/
+    /* }*/
+    /**/
+    /* private void intakeStone() {*/
+    /*     setIntakeSpeed(Constants.INTAKE_SPEED);*/
+    /* }*/
 
     private void clampPlatform() {
-        clampA.setPosition(1);
-        clampB.setPosition(1);
+        clampA.setPosition(-1);
+        clampB.setPosition(-1);
     }
+
     private void releasePlatform() {
         clampA.setPosition(0);
         clampB.setPosition(0);
     }
+
     private double getDistance() {
         return rightBackDrive.getCurrentPosition() * PPR_TO_INCHES;
     }
 
     public void resetEncoder() {
-        rightBackDrive.setTargetPosition(0);
+        rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
     public void driveToDistance(double distance) {
         resetEncoder();
         int distanceForMotor = (int) (distance * COUNTS_PER_INCH); //This should convert the distance we collect back to what the motor reads
-
-        leftBackDrive.setTargetPosition(distanceForMotor);
-        leftBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         leftFrontDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rightBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightFrontDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        driveRaw(.99);
+        rightBackDrive.setTargetPosition(distanceForMotor);
 
-        while (leftBackDrive.isBusy()) {
+        driveSetSpeed(.5);
+
+        while (rightBackDrive.isBusy()) {
             telemetry.addData("Current Position", leftBackDrive.getCurrentPosition());
             telemetry.addData("Target Position: ", leftBackDrive.getTargetPosition());
             telemetry.update();
         }
+
+        driveSetSpeed(0);
+
     }
+
     //Raw Driving Methods
-    public void driveRaw(double power) {
+    public void driveSetSpeed(double power) {
         leftFrontDrive.setPower(power);
         rightFrontDrive.setPower(power);
         leftBackDrive.setPower(power);
         rightBackDrive.setPower(power);
     }
-    public void turnLeft (double power){
-        leftFrontDrive.setPower (power);
-        rightFrontDrive.setPower (-power);
-        leftBackDrive.setPower (power);
-        rightBackDrive.setPower (-power);
+
+    public void turnLeft(double power) {
+        leftFrontDrive.setPower(power);
+        rightFrontDrive.setPower(-power);
+        leftBackDrive.setPower(power);
+        rightBackDrive.setPower(-power);
     }
-    public void turnRight (double power) {
+
+    public void turnRight(double power) {
         leftFrontDrive.setPower(-power);
         rightFrontDrive.setPower(power);
         leftBackDrive.setPower(-power);

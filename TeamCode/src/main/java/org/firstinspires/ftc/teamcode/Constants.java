@@ -23,6 +23,6 @@ public interface Constants {
     double INTAKE_CLOSE = 0;
 
     //Intake Speeds
-    double SHOOT_SPEED = .8;
-    double INTAKE_SPEED = -.8;
+    double SHOOT_SPEED = .95;
+    double INTAKE_SPEED = -.95;
 }
