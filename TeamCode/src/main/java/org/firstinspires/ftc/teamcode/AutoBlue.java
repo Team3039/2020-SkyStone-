@@ -133,7 +133,7 @@ public class AutoBlue extends LinearOpMode implements Constants {
     }
         public void driveToDistance ( double distance){
             resetEncoder();
-            int distanceForMotor = (int) (distance * COUNTS_PER_INCH); //This should convert the distance we collect back to what the motor reads
+            int distanceForMotor = (int) (distance * 2); //This should convert the distance we collect back to what the motor reads
             leftBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             leftFrontDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             rightBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
