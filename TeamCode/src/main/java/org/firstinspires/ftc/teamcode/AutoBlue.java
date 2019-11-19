@@ -1,17 +1,16 @@
 package org.firstinspires.ftc.teamcode;
 
 
+import android.text.method.Touch;
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
-import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
 
 @Autonomous
 public class AutoBlue extends LinearOpMode implements Constants {
-    private ElapsedTime runtime = new ElapsedTime();
     //Drivetrain Motors
     private DcMotor leftFrontDrive = null;
     private DcMotor rightFrontDrive = null;
@@ -19,65 +18,102 @@ public class AutoBlue extends LinearOpMode implements Constants {
     private DcMotor rightBackDrive = null;
 
     //Gamepiece Motors
-    private Servo arm = null;
-    private DcMotor elevatorA = null;
-    private DcMotor elevatorB = null;
-    private Servo elevatorTilt;
+    private DcMotor stretch = null;
+    private DcMotor elevator =  null;
     private DcMotor intakeA = null;
     private DcMotor intakeB = null;
-    private Servo arm1 = null;
-    private Servo arm2 = null;
+
+    //servos
+    private Servo elevatorTilt = null;
     private Servo clampA = null;
     private Servo clampB = null;
+
+    //sensors
     private TouchSensor upperLimit = null;
     private TouchSensor lowerLimit = null;
 
-
     @Override
-    public void runOpMode() {
+    public void runOpMode () {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
-        //Initialization
+
+        //Initialization- Motors
         leftFrontDrive = hardwareMap.get(DcMotor.class, "leftFrontDrive");
         rightFrontDrive = hardwareMap.get(DcMotor.class, "rightFrontDrive");
         leftBackDrive = hardwareMap.get(DcMotor.class, "leftBackDrive");
         rightBackDrive = hardwareMap.get(DcMotor.class, "rightBackDrive");
-        arm1 = hardwareMap.get(Servo.class, "arm1");
-        arm2 = hardwareMap.get(Servo.class, "arm2");
-        elevatorA = hardwareMap.get(DcMotor.class, "elevatorA");
-        elevatorB = hardwareMap.get(DcMotor.class, "elevatorB");
-        elevatorTilt = hardwareMap.get(Servo.class, "elevatorTilt");//
+        stretch = hardwareMap.get(DcMotor.class, "stretch");
+        elevator = hardwareMap.get(DcMotor.class, "elevator");
         intakeA = hardwareMap.get(DcMotor.class, "intakeA");
         intakeB = hardwareMap.get(DcMotor.class, "intakeB");
-        clampA = hardwareMap.get(Servo.class, "clampA");
-        clampB = hardwareMap.get(Servo.class, "clamoB");
+
+        //Initialization - Servos
+        elevatorTilt = hardwareMap.get(Servo.class , "elevatorTilt");
+        clampA = hardwareMap.get(Servo.class , "clampA");
+        clampB = hardwareMap.get(Servo.class , "clampB");
+
+        //Initialization - Sensors
+        upperLimit = hardwareMap.get(TouchSensor.class, "upperLimit");
         lowerLimit = hardwareMap.get(TouchSensor.class, "lowerLimit");
 
-        //Default Direction Changed
-        leftFrontDrive.setDirection(DcMotor.Direction.FORWARD);
+        //Motor Polarity
+        leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
+        rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
+        leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
+        rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
 
-        waitForStart();
-        runtime.reset();
+        //Every other motor should be set to run without an encoder. This shouldn't have to be changed.
+        rightFrontDrive.setMode((DcMotor.RunMode.RUN_WITHOUT_ENCODER));
+        leftBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        leftFrontDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        while (opModeIsActive()) {
-            runtime.reset();
-//            while (getRuntime() < 1) {
-//                strafeLeft(.8);
-//            }
-//            while (getRuntime() == 1.1) {
-//                stop();
-        }
-        while (getRuntime() <= 7) {
-            tiltElevator(1);
-        }
-//            while (getRuntime() == 2.5)  {
-//                stop();
-//            }
-
-
-        telemetry.addData("Status", "Run Time: " + runtime.toString());
+        telemetry.addData("Mode", "waiting");
         telemetry.update();
 
+        //Operator presses START here. Everything below waitForStart(); will run.
+        waitForStart();
+        telemetry.addData("Mode", "running");
+        telemetry.update();
+
+        driveToDistance(-32);
+        resetStartTime();
+        rightBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        while (opModeIsActive() & getRuntime()< 3)
+        {
+            clampFoundation();
+        }
+
+        driveToDistance(32);
+        resetStartTime();
+        rightBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        while (opModeIsActive() & getRuntime()< 3)
+        {
+            releaseFoundation();
+        }
+
+        resetStartTime();
+        while (opModeIsActive() & getRuntime()< 2)
+        {
+            strafeLeft(.85);
+        }
+
+        driveToDistance(-2);
+        resetStartTime();
+        rightBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        while (opModeIsActive() & getRuntime()< 3)
+        {
+            tiltElevator(1);
+        }
+
+        resetStartTime();
+        while (opModeIsActive() & getRuntime()< 1)
+        {
+            strafeLeft(.85);
+        }
+        stopDriving();
     }
 
     private void strafeLeft(double strafeSpeed) {
@@ -101,53 +137,46 @@ public class AutoBlue extends LinearOpMode implements Constants {
         rightBackDrive.setPower(power);
     }
 
-    public void turnLeft(double power) {
+    private void stopDriving(){
+        driveForward(0);
+    }
+    private void tiltElevator(double position) {
+        elevatorTilt.setPosition(position);
+    }
+
+    private void clampFoundation() {
+        clampA.setPosition(1);
+        clampB.setPosition(1);
+    }
+
+    private void releaseFoundation (){
+        clampA.setPosition (0);
+        clampB.setPosition(0);
+    }
+
+    public void turnRight(double power) {
         leftFrontDrive.setPower(power);
         rightFrontDrive.setPower(-power);
         leftBackDrive.setPower(power);
         rightBackDrive.setPower(-power);
     }
-
-    public void turnRight(double power) {
-        leftFrontDrive.setPower(-power);
-        rightFrontDrive.setPower(power);
-        leftBackDrive.setPower(-power);
-        rightBackDrive.setPower(power);
+    public void turnLeft(double power){
+        turnRight(-power);
     }
-    public void resetEncoder() {
+
+    public void driveToDistance (double inches){
         rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightBackDrive.setTargetPosition ((int)(inches / PPR_TO_INCHES)); //This converts inches back into pulses. 1 pulse covers about .046 inches of distance.
         rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-    }
-    public void driveSetSpeed(double power) {
-        leftFrontDrive.setPower(power);
-        rightFrontDrive.setPower(power);
-        leftBackDrive.setPower(power);
-        rightBackDrive.setPower(power);
-    }
-    public void driveSquare(double power) {
-        driveToDistance(INCHES_PER_SQUARE);
-    }
+        driveForward(.5);
 
-    private void tiltElevator(double position) {
-        elevatorTilt.setPosition(position);
-    }
-        public void driveToDistance ( double distance){
-            resetEncoder();
-            int distanceForMotor = (int) (distance * 2); //This should convert the distance we collect back to what the motor reads
-            leftBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            leftFrontDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            rightBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            rightFrontDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            rightBackDrive.setTargetPosition(distanceForMotor);
-
-            driveSetSpeed(.5);
-
-            while (rightBackDrive.isBusy()) {
-                telemetry.addData("Current Position", leftBackDrive.getCurrentPosition());
-                telemetry.addData("Target Position: ", leftBackDrive.getTargetPosition());
-                telemetry.update();
-            }
+        while (opModeIsActive() && rightBackDrive.isBusy())
+        {
+            telemetry.addData("Current Encoder Position: ", rightBackDrive.getCurrentPosition() + "  busy = " + rightBackDrive.isBusy());
+            telemetry.update();
+            idle();
         }
+        stopDriving();
+    }
 
 }
-

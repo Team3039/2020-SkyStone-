@@ -14,6 +14,7 @@ public interface Constants {
     //Elevator
     double UPPER_LIMIT = 1000;
     double ELEVATOR_GAIN = .95;
+    double SLOWED_ELEVATOR_GAIN = .25;
 
     //Servo Positions
     double CLAMP_FOUNDATION = 1;

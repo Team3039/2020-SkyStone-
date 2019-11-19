@@ -1,4 +1,5 @@
 package org.firstinspires.ftc.teamcode;
+
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -33,7 +34,6 @@ public class TeleOpMode extends OpMode implements Constants {
     private Servo clampB = null;
 
     //sensors
-    private TouchSensor upperLimit = null;
     private TouchSensor lowerLimit = null;
 
     @Override
@@ -54,7 +54,6 @@ public class TeleOpMode extends OpMode implements Constants {
         clampB = hardwareMap.get(Servo.class , "clampB");
 
         //Initialization - Sensors
-        upperLimit = hardwareMap.get(TouchSensor.class, "upperLimit");
         lowerLimit = hardwareMap.get(TouchSensor.class, "lowerLimit");
 
         leftFrontDrive.setDirection(DcMotor.Direction.FORWARD);
@@ -102,7 +101,7 @@ public class TeleOpMode extends OpMode implements Constants {
             releasePlatform();
         }
 
-        //Driving and Strafing
+        //Driving
         if (gamepad1.left_trigger > .1) {
             strafeLeft(.8);
         }
@@ -119,7 +118,7 @@ public class TeleOpMode extends OpMode implements Constants {
             rightBackDrive.setPower(rightOutput);
         }
 
-        //Grabbing Stones
+        //Intake
         if (gamepad2.left_trigger > .1) {
             intakeA.setPower(Constants.SHOOT_SPEED * -1);
             intakeB.setPower(Constants.SHOOT_SPEED);
@@ -133,14 +132,15 @@ public class TeleOpMode extends OpMode implements Constants {
             intakeB.setPower(0);
         }
 
+        //Elevator
         if (lowerLimit.isPressed()) {
-            elevator.setPower(0.2);
+            moveElevator(gamepad2.right_stick_y * -1 * Constants.SLOWED_ELEVATOR_GAIN);
         }
         else {
             moveElevator(gamepad2.right_stick_y * -1 * Constants.ELEVATOR_GAIN);
-
-            tiltElevator(Range.clip(gamepad2.left_stick_y * -1, 0, 1));
         }
+
+        tiltElevator(Range.clip(gamepad2.left_stick_y * -1, 0, 1));
 
 
 
