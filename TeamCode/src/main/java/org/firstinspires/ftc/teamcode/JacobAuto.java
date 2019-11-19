@@ -30,7 +30,7 @@ public class JacobAuto extends LinearOpMode implements Constants {
     private DcMotor intakeB = null;
 
     //servos
-    private Servo elevatorTilt;
+    private Servo elevatorTilt= null;
     private Servo clampA = null;
     private Servo clampB = null;
 
@@ -72,9 +72,7 @@ public class JacobAuto extends LinearOpMode implements Constants {
         //reset encoder count on rightBackDrive. This is the initial call, as this will be done within driveToDistance() from now on.
         rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        // set rightBackDrive to run to a position AFTER giving it the position to run to.
-        rightBackDrive.setTargetPosition(538);
-        rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
 
         //Every other motor should be set to run without an encoder. This shouldn't have to be changed.
         rightFrontDrive.setMode((DcMotor.RunMode.RUN_WITHOUT_ENCODER));
@@ -95,7 +93,7 @@ public class JacobAuto extends LinearOpMode implements Constants {
 
         while (opModeIsActive() & getRuntime()< 1)
         {
-            turnLeft(3);
+
         }
 
         stopDriving();

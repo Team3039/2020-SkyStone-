@@ -131,4 +131,23 @@ public class AutoRed extends LinearOpMode implements Constants {
         leftBackDrive.setPower(power);
         rightBackDrive.setPower(-power);
     }
+    private void stopDriving(){
+        driveForward(0);
+    }
+
+    public void driveToDistance (double inches){
+        rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightBackDrive.setTargetPosition ((int)(inches / PPR_TO_INCHES)); //This converts inches back into pulses. 1 pulse covers about .046 inches of distance.
+        rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        driveForward(.5);
+
+        while (opModeIsActive() && rightBackDrive.isBusy())
+        {
+            telemetry.addData("Current Encoder Position: ", rightBackDrive.getCurrentPosition() + "  busy = " + rightBackDrive.isBusy());
+            telemetry.update();
+            idle();
+        }
+        stopDriving();
+    }
+
 }

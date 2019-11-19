@@ -17,9 +17,8 @@ public interface Constants {
 
     //Servo Positions
     double CLAMP_FOUNDATION = 1;
-    double RELEASE_FOUNDATION = .0;
-    double INTAKE_OPEN = 1;
-    double INTAKE_CLOSE = 0;
+    double RELEASE_FOUNDATION = 0;
+
 
     //Intake Speeds
     double SHOOT_SPEED = .95;
