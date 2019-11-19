@@ -13,6 +13,7 @@ import com.qualcomm.robotcore.util.Range;
 @TeleOp(name="TeleOpMode", group="Iterative Opmode")
 
 public class TeleOpMode extends OpMode implements Constants {
+
     private ElapsedTime runtime = new ElapsedTime();
     //Drivetrain Motors
     private DcMotor leftFrontDrive = null;
@@ -27,7 +28,7 @@ public class TeleOpMode extends OpMode implements Constants {
     private DcMotor intakeB = null;
 
     //servos
-    private Servo elevatorTilt= null;
+    private Servo elevatorTilt = null;
     private Servo clampA = null;
     private Servo clampB = null;
 
@@ -136,7 +137,6 @@ public class TeleOpMode extends OpMode implements Constants {
             elevator.setPower(0.2);
         }
         else {
-
             moveElevator(gamepad2.right_stick_y * -1 * Constants.ELEVATOR_GAIN);
 
             tiltElevator(Range.clip(gamepad2.left_stick_y * -1, 0, 1));
@@ -165,21 +165,13 @@ public class TeleOpMode extends OpMode implements Constants {
     }
 
 
-
     private void moveElevator(double power) {
         elevator.setPower(power);
     }
 
-
-
-
-
     private void tiltElevator(double position) {
         elevatorTilt.setPosition(position);
     }
-
-
-
 
     private void clampPlatform() {
         clampA.setPosition(-1);
