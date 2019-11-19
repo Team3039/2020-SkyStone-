@@ -143,8 +143,7 @@ public class TeleOpMode extends OpMode implements Constants {
         }
 
 
-        telemetry.addData("position", getDistance());
-        telemetry.update();
+
     }
 
     @Override
@@ -191,18 +190,5 @@ public class TeleOpMode extends OpMode implements Constants {
         clampA.setPosition(0);
         clampB.setPosition(0);
     }
-
-    private double getDistance() {
-        return rightBackDrive.getCurrentPosition() * PPR_TO_INCHES;
-    }
-
-    public void resetEncoder() {
-        rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-    }
-
-
-
-
 
 }

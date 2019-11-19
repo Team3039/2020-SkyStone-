@@ -68,12 +68,6 @@ public class JacobAuto extends LinearOpMode implements Constants {
         leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
         rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
 
-
-        //reset encoder count on rightBackDrive. This is the initial call, as this will be done within driveToDistance() from now on.
-        rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-
-
         //Every other motor should be set to run without an encoder. This shouldn't have to be changed.
         rightFrontDrive.setMode((DcMotor.RunMode.RUN_WITHOUT_ENCODER));
         leftBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -87,18 +81,45 @@ public class JacobAuto extends LinearOpMode implements Constants {
         telemetry.addData("Mode", "running");
         telemetry.update();
 
-        driveToDistance(3);
+        driveToDistance(-32);
         resetStartTime();
         rightBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        while (opModeIsActive() & getRuntime()< 1)
+        while (opModeIsActive() & getRuntime()< 3)
         {
-
+            clampFoundation();
         }
 
+        driveToDistance(32);
+        resetStartTime();
+        rightBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        while (opModeIsActive() & getRuntime()< 3)
+        {
+            releaseFoundation();
+        }
+
+        resetStartTime();
+        while (opModeIsActive() & getRuntime()< 2)
+        {
+            strafeRight(.85);
+        }
+
+        driveToDistance(-2);
+        resetStartTime();
+        rightBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        while (opModeIsActive() & getRuntime()< 3)
+        {
+            tiltElevator(1);
+        }
+
+        resetStartTime();
+        while (opModeIsActive() & getRuntime()< 1)
+        {
+            strafeRight(.85);
+        }
         stopDriving();
-
-
     }
 
     private void strafeLeft(double strafeSpeed) {
@@ -127,6 +148,16 @@ public class JacobAuto extends LinearOpMode implements Constants {
     }
     private void tiltElevator(double position) {
         elevatorTilt.setPosition(position);
+    }
+
+    private void clampFoundation() {
+       clampA.setPosition(1);
+       clampB.setPosition(1);
+    }
+
+    private void releaseFoundation (){
+        clampA.setPosition (0);
+        clampB.setPosition(0);
     }
 
     public void turnRight(double power) {
