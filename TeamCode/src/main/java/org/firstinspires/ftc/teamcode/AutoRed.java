@@ -75,44 +75,32 @@ public class AutoRed extends LinearOpMode implements Constants {
         telemetry.addData("Mode", "running");
         telemetry.update();
 
+        resetStartTime();
+        while (opModeIsActive() & getRuntime() < 3) {
+            strafeLeft(.8);
+        }
         driveToDistance(-32);
         resetStartTime();
-        rightBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        while (opModeIsActive() & getRuntime()< 3)
-        {
+        while (opModeIsActive() & getRuntime()< 3) {
             clampFoundation();
         }
-
         driveToDistance(32);
-        resetStartTime();
-        rightBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        while (opModeIsActive() & getRuntime()< 3)
-        {
+        resetStartTime();
+        while (opModeIsActive() & getRuntime()< 3) {
             releaseFoundation();
         }
-
         resetStartTime();
         while (opModeIsActive() & getRuntime()< 2)
         {
             strafeRight(.85);
         }
 
-        driveToDistance(-2);
         resetStartTime();
-        rightBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        while (opModeIsActive() & getRuntime()< 3)
-        {
+        while (opModeIsActive() & getRuntime()< 3) {
             tiltElevator(1);
         }
-
         resetStartTime();
-        while (opModeIsActive() & getRuntime()< 1)
-        {
-            strafeRight(.85);
-        }
         stopDriving();
     }
 
