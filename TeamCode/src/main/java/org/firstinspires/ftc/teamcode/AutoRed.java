@@ -9,6 +9,17 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
+import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.robocol.TelemetryMessage;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.internal.opmode.TelemetryImpl;
+import org.firstinspires.ftc.robotcore.internal.opmode.TelemetryInternal;
+import org.firstinspires.ftc.robotcore.internal.opmode.OpModeServices;
+
+import java.util.concurrent.TimeUnit;
+
 @Autonomous
 public class AutoRed extends LinearOpMode implements Constants {
     //Drivetrain Motors
@@ -76,24 +87,29 @@ public class AutoRed extends LinearOpMode implements Constants {
         telemetry.update();
 
         resetStartTime();
-        while (opModeIsActive() & getRuntime() < 3) {
-            strafeLeft(.8);
+
+        while (opModeIsActive() & getRuntime() < 1) {
+            strafeRight(.8);
         }
-        driveToDistance(-32);
         resetStartTime();
-        while (opModeIsActive() & getRuntime()< 3) {
+        while (opModeIsActive() && getRuntime() < 2.5) {
+            driveBackward(.85);
+        }
+        resetStartTime();
+        while (opModeIsActive() & getRuntime() < 3) {
             clampFoundation();
         }
-        driveToDistance(32);
-
+        resetStartTime();
+        while (opModeIsActive() && getRuntime() < 3 ) {
+            driveForward(.85);
+        }
         resetStartTime();
         while (opModeIsActive() & getRuntime()< 3) {
             releaseFoundation();
         }
         resetStartTime();
-        while (opModeIsActive() & getRuntime()< 2)
-        {
-            strafeRight(.85);
+        while (opModeIsActive() & getRuntime()< 2) {
+            strafeLeft(.85);
         }
 
         resetStartTime();
@@ -124,7 +140,12 @@ public class AutoRed extends LinearOpMode implements Constants {
         leftBackDrive.setPower(power);
         rightBackDrive.setPower(power);
     }
-
+    private void driveBackward(double power) {
+        leftFrontDrive.setPower(-power);
+        rightFrontDrive.setPower(-power);
+        leftBackDrive.setPower(-power);
+        rightBackDrive.setPower(-power);
+    }
     private void stopDriving(){
         driveForward(0);
     }
@@ -152,11 +173,11 @@ public class AutoRed extends LinearOpMode implements Constants {
         turnRight(-power);
     }
 
-    public void driveToDistance (double inches){
+    public void driveToDistance (double inches, double power){
         rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightBackDrive.setTargetPosition ((int)(inches / PPR_TO_INCHES)); //This converts inches back into pulses. 1 pulse covers about .046 inches of distance.
         rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        driveForward(.5);
+        driveForward(power);
 
         while (opModeIsActive() && rightBackDrive.isBusy())
         {

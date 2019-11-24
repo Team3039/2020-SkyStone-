@@ -39,7 +39,7 @@ public class JacobAuto extends LinearOpMode implements Constants {
     private TouchSensor lowerLimit = null;
 
     @Override
-    public void runOpMode () {
+    public void runOpMode () throws InterruptedException {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
@@ -72,64 +72,63 @@ public class JacobAuto extends LinearOpMode implements Constants {
         rightFrontDrive.setMode((DcMotor.RunMode.RUN_WITHOUT_ENCODER));
         leftBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         leftFrontDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         telemetry.addData("Mode", "waiting");
         telemetry.update();
 
         //Operator presses START here. Everything below waitForStart(); will run.
         waitForStart();
+
         telemetry.addData("Mode", "running");
         telemetry.update();
+        while (opModeIsActive()) {
 
-        driveToDistance(-32);
-        resetStartTime();
-        rightBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            reverseToDistance(-50);
+            resetStartTime();
+            rightBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        while (opModeIsActive() & getRuntime()< 3)
-        {
-            clampFoundation();
+            while (getRuntime() < 3) {
+                clampFoundation();
+            }
+
+            driveToDistance(50);
+            resetStartTime();
+            rightBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+            while (getRuntime() < 3) {
+                releaseFoundation();
+            }
+
+            resetStartTime();
+            while (getRuntime() < 2) {
+                strafeRight(.6);
+            }
+
+            reverseToDistance(-2);
+            resetStartTime();
+            rightBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+            while (getRuntime() < 3) {
+                tiltElevator(1);
+            }
+
+            resetStartTime();
+            while (getRuntime() < 1) {
+                strafeRight(.6);
+            }
+            stopDriving();
         }
-
-        driveToDistance(32);
-        resetStartTime();
-        rightBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        while (opModeIsActive() & getRuntime()< 3)
-        {
-            releaseFoundation();
-        }
-
-        resetStartTime();
-        while (opModeIsActive() & getRuntime()< 2)
-        {
-            strafeRight(.85);
-        }
-
-        driveToDistance(-2);
-        resetStartTime();
-        rightBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        while (opModeIsActive() & getRuntime()< 3)
-        {
-            tiltElevator(1);
-        }
-
-        resetStartTime();
-        while (opModeIsActive() & getRuntime()< 1)
-        {
-            strafeRight(.85);
-        }
-        stopDriving();
     }
 
-    private void strafeLeft(double strafeSpeed) {
+    private void strafeRight (double strafeSpeed) {
         leftFrontDrive.setPower(strafeSpeed);
         leftBackDrive.setPower(-strafeSpeed);
         rightFrontDrive.setPower(-strafeSpeed);
         rightBackDrive.setPower(strafeSpeed);
     }
 
-    private void strafeRight(double strafeSpeed) {
+    private void strafeLeft(double strafeSpeed) {
         leftFrontDrive.setPower(-strafeSpeed);
         leftBackDrive.setPower(strafeSpeed);
         rightFrontDrive.setPower(strafeSpeed);
@@ -143,12 +142,9 @@ public class JacobAuto extends LinearOpMode implements Constants {
         rightBackDrive.setPower(power);
     }
 
-    private void stopDriving(){
-        driveForward(0);
-    }
-    private void tiltElevator(double position) {
-        elevatorTilt.setPosition(position);
-    }
+    private void driveBackward(double power){ driveForward(-power);}
+    private void stopDriving(){ driveForward(0); }
+    private void tiltElevator(double position) { elevatorTilt.setPosition(position); }
 
     private void clampFoundation() {
        clampA.setPosition(1);
@@ -172,17 +168,30 @@ public class JacobAuto extends LinearOpMode implements Constants {
 
     public void driveToDistance (double inches){
         rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightBackDrive.setTargetPosition ((int)(inches / PPR_TO_INCHES)); //This converts inches back into pulses. 1 pulse covers about .046 inches of distance.
         rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        driveForward(.5);
+        rightBackDrive.setTargetPosition ((int)(inches / PPR_TO_INCHES)); //This converts inches back into pulses. 1 pulse covers about .046 inches of distance.
+        driveForward(.85);
 
-        while (opModeIsActive() && rightBackDrive.isBusy())
+        while (rightBackDrive.isBusy())
         {
-            telemetry.addData("Current Encoder Position: ", rightBackDrive.getCurrentPosition() + "  busy = " + rightBackDrive.isBusy());
+            telemetry.addData("Current Encoder Position: ", rightBackDrive.getCurrentPosition() );
             telemetry.update();
-            idle();
+
         }
         stopDriving();
     }
 
+    public void reverseToDistance (double inches){
+        rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightBackDrive.setTargetPosition ((int)(inches / PPR_TO_INCHES)); //This converts inches back into pulses. 1 pulse covers about .046 inches of distance.
+        driveBackward(.85);
+
+        while (rightBackDrive.isBusy())
+        {
+            telemetry.addData("Current Encoder Position: ", rightBackDrive.getCurrentPosition());
+            telemetry.update();
+
+        }
+        stopDriving();
+    }
 }

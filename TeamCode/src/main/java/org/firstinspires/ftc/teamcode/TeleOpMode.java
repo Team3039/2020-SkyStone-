@@ -117,6 +117,12 @@ public class TeleOpMode extends OpMode implements Constants {
             leftBackDrive.setPower(leftOutput);
             rightBackDrive.setPower(rightOutput);
         }
+        if (gamepad1.a) {
+            drive(.85);
+        }
+        if (gamepad1.y) {
+            drive(-.85);
+        }
 
         //Intake
         if (gamepad2.left_trigger > .1) {
@@ -162,6 +168,12 @@ public class TeleOpMode extends OpMode implements Constants {
         leftBackDrive.setPower(-strafeSpeed);
         rightFrontDrive.setPower(-strafeSpeed);
         rightBackDrive.setPower(strafeSpeed);
+    }
+    private void drive (double power) {
+        leftFrontDrive.setPower(power);
+        rightFrontDrive.setPower(power);
+        leftBackDrive.setPower(power);
+        rightBackDrive.setPower(power);
     }
 
 
