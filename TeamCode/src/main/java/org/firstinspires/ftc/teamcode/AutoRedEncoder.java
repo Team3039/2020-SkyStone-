@@ -7,7 +7,23 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
+/*
+//////////////////////////////
 
+    /    /          /    /
+    /    /          /    /
+    /    /          /    /
+    /    /          /    /
+
+
+    \\\\\\\\\\\\\\\\\\\\\\
+
+        /           /
+        /           /
+        /           /
+        /           /
+//////////////////////////////
+ */
 /*
     Conditions for this auto to work optimally:
         -We start on the BUILDING ZONE (The side with the foundations (the big plate things that we need to drag)
@@ -88,40 +104,32 @@ public class AutoRedEncoder extends LinearOpMode implements Constants {
         telemetry.update();
         while (opModeIsActive()) {
 
-            reverseToDistance(-50);
+            //Start of Auto
+            //Initial Strafe into Foundation Grabbing Zone
+            strafeLeftToDistance(32);
+            //Backing Into Contact With the Foundation
+            reverseToDistance(32);
+            //Locking onto the Foundation
             resetStartTime();
-            rightBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
             while (getRuntime() < 3) {
                 clampFoundation();
             }
-
-            driveToDistance(50);
+            //Bringing the Foundation to the Scoring Zone
+            driveToDistance(32);
+            //Releasing the Foundation
             resetStartTime();
-            rightBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
             while (getRuntime() < 3) {
                 releaseFoundation();
             }
-
-            resetStartTime();
-            while (getRuntime() < 2) {
-                strafeRight(.6);
-            }
-
-            reverseToDistance(-2);
-            resetStartTime();
-            rightBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
+            //Strafing Into the Center Line
+            strafeRightToDistance(40);
+            //Bringing down the Elevator/Intake Mechanism
             while (getRuntime() < 3) {
                 tiltElevator(1);
             }
-
-            resetStartTime();
-            while (getRuntime() < 1) {
-                strafeRight(.6);
-            }
+            //Security Stop All Driving
             stopDriving();
+
         }
     }
     //Strafes Right
@@ -202,8 +210,34 @@ public class AutoRedEncoder extends LinearOpMode implements Constants {
         {
             telemetry.addData("Current Encoder Position: ", rightBackDrive.getCurrentPosition());
             telemetry.update();
+        }
+        stopDriving();
+    }
+    public void strafeLeftToDistance(double inches) {
+        rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightBackDrive.setTargetPosition((int) (inches / PPR_TO_INCHES)); //This converts inches back into pulses. 1 pulse covers about .046 inches of distance.
+        strafeLeft(.85);
 
+        while (rightBackDrive.isBusy()) {
+            telemetry.addData("Current Encoder Position: ", rightBackDrive.getCurrentPosition());
+            telemetry.update();
+        }
+        stopDriving();
+    }
+
+    //Drives backward to a certain distance in inches
+    public void strafeRightToDistance(double inches) {
+        rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightBackDrive.setTargetPosition((int) (inches / PPR_TO_INCHES)); //This converts inches back into pulses. 1 pulse covers about .046 inches of distance.
+        strafeRight(.85);
+
+        while (rightBackDrive.isBusy()) {
+            telemetry.addData("Current Encoder Position: ", rightBackDrive.getCurrentPosition());
+            telemetry.update();
         }
         stopDriving();
     }
 }
+
+

@@ -7,7 +7,23 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
+/*
+//////////////////////////////
 
+    /    /          /    /
+    /    /          /    /
+    /    /          /    /
+    /    /          /    /
+
+
+    \\\\\\\\\\\\\\\\\\\\\\
+
+        /           /
+        /           /
+        /           /
+        /           /
+//////////////////////////////
+ */
 /*
     Conditions for this auto to work optimally:
         -We start on the BUILDING ZONE (The side with the foundations (the big plate things that we need to drag)
@@ -57,9 +73,9 @@ public class AutoRedTime extends LinearOpMode implements Constants {
         intakeB = hardwareMap.get(DcMotor.class, "intakeB");
 
         //Initialization - Servos
-        elevatorTilt = hardwareMap.get(Servo.class , "elevatorTilt");
-        clampA = hardwareMap.get(Servo.class , "clampA");
-        clampB = hardwareMap.get(Servo.class , "clampB");
+        elevatorTilt = hardwareMap.get(Servo.class, "elevatorTilt");
+        clampA = hardwareMap.get(Servo.class, "clampA");
+        clampB = hardwareMap.get(Servo.class, "clampB");
 
         //Initialization - Sensors
         lowerLimit = hardwareMap.get(TouchSensor.class, "lowerLimit");
@@ -86,42 +102,45 @@ public class AutoRedTime extends LinearOpMode implements Constants {
 
         //Start of Auto
         //Initial Strafe Into Foundation Grabbing Zone
-        resetStartTime();
-        while (opModeIsActive() & getRuntime() < 1) {
-            strafeRight(.8);
+        while (opModeIsActive()) {
+            resetStartTime();
+            while (getRuntime() < 1) {
+                strafeRight(.8);
+            }
+            //Backing Into Contact With the Foundation
+            resetStartTime();
+            while (getRuntime() < 2.5) {
+                driveBackward(.85);
+            }
+            //Locking onto the Foundation
+            resetStartTime();
+            while (getRuntime() < 3) {
+                clampFoundation();
+            }
+            //Bringing the Foundation to the Scoring Zone
+            resetStartTime();
+            while (getRuntime() < 3) {
+                driveForward(.85);
+            }
+            //Releasing the Foundation
+            resetStartTime();
+            while (getRuntime() < 3) {
+                releaseFoundation();
+            }
+            //Strafing Into the Center Line
+            resetStartTime();
+            while (getRuntime() < 2) {
+                strafeLeft(.85);
+            }
+            //Bringing down the Elevator/Intake Mechanism
+            resetStartTime();
+            while (getRuntime() < 3) {
+                tiltElevator(1);
+            }
+            //Security Stop All Driving
+            stopDriving();
+            //End of Auto
         }
-        //Backing Into Contact With the Foundation
-        resetStartTime();
-        while (opModeIsActive() && getRuntime() < 2.5) {
-            driveBackward(.85);
-        }
-        //Locking onto the Foundation
-        resetStartTime();
-        while (opModeIsActive() & getRuntime() < 3) {
-            clampFoundation();
-        }
-        //Bringing the Foundation to the Scoring Zone
-        resetStartTime();
-        while (opModeIsActive() && getRuntime() < 3 ) {
-            driveForward(.85);
-        }
-        resetStartTime();
-        while (opModeIsActive() & getRuntime()< 3) {
-            releaseFoundation();
-        }
-        //Strafing Into the Center Line
-        resetStartTime();
-        while (opModeIsActive() & getRuntime()< 2) {
-            strafeLeft(.85);
-        }
-        //Bringing down the Elevator/Intake Mechanism
-        resetStartTime();
-        while (opModeIsActive() & getRuntime()< 3) {
-            tiltElevator(1);
-        }
-        //Security Stop All Driving
-        stopDriving();
-        //End of Auto
     }
     //Strafes Right
     private void strafeRight (double strafeSpeed) {

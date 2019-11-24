@@ -7,7 +7,23 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
+/*
+//////////////////////////////
 
+    /    /          /    /
+    /    /          /    /
+    /    /          /    /
+    /    /          /    /
+
+
+    \\\\\\\\\\\\\\\\\\\\\\
+
+        /           /
+        /           /
+        /           /
+        /           /
+//////////////////////////////
+ */
 /*
     Conditions for this auto to work optimally:
         -We start on the BUILDING ZONE (The side with the foundations (the big plate things that we need to drag)

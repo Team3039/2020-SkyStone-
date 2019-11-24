@@ -23,20 +23,21 @@ import com.qualcomm.robotcore.hardware.TouchSensor;
         /           /
         /           /
 //////////////////////////////
+ */
 /*
     Conditions for this auto to work optimally:
-        -We start on the BUILDING ZONE (The side with the foundations (the big plate things that we need to drag)
+        -We start on the LOADING ZONE (The side with the blocks
         -The encoders are plugged in, wired correctly, working correctly, and coded correctly.
         -We start on the BLUE side of the field (The side of the field that has the blue part of the central gate)
     Notes:
         -It is always preferable to use this auto but it has a severe lack of testing
     Priorities:
-        -Test, Test, Test!
-        -Get the encoder code working
+        -Get the phone cam working first, then the webcam
+        -Figure out how to do this from the source code
  */
 
 @Autonomous
-public class AutoBlueEncoder extends LinearOpMode implements Constants {
+public class AutoBlueVision extends LinearOpMode implements Constants {
 
     //Drivetrain Motors
     private DcMotor leftFrontDrive = null;
@@ -46,7 +47,7 @@ public class AutoBlueEncoder extends LinearOpMode implements Constants {
 
     //Gamepiece Motors
     private DcMotor stretch = null; //Open & Close Intake
-    private DcMotor elevator = null; //Move the elevator up and down (Tied to gamepad2 right joystick)
+    private DcMotor elevator =  null; //Move the elevator up and down (Tied to gamepad2 right joystick)
     private DcMotor intakeA = null; //Left Intake side (Spins those wheels)
     private DcMotor intakeB = null; //Right Intake side (Spins those wheels)
 
@@ -59,7 +60,7 @@ public class AutoBlueEncoder extends LinearOpMode implements Constants {
     private TouchSensor lowerLimit = null; //Prevents elevator from going too far down
 
     @Override
-    public void runOpMode() throws InterruptedException {
+    public void runOpMode () throws InterruptedException {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
@@ -74,9 +75,9 @@ public class AutoBlueEncoder extends LinearOpMode implements Constants {
         intakeB = hardwareMap.get(DcMotor.class, "intakeB");
 
         //Initialization - Servos
-        elevatorTilt = hardwareMap.get(Servo.class, "elevatorTilt");
-        clampA = hardwareMap.get(Servo.class, "clampA");
-        clampB = hardwareMap.get(Servo.class, "clampB");
+        elevatorTilt = hardwareMap.get(Servo.class , "elevatorTilt");
+        clampA = hardwareMap.get(Servo.class , "clampA");
+        clampB = hardwareMap.get(Servo.class , "clampB");
 
         //Initialization - Sensors
         lowerLimit = hardwareMap.get(TouchSensor.class, "lowerLimit");
@@ -103,43 +104,16 @@ public class AutoBlueEncoder extends LinearOpMode implements Constants {
         telemetry.update();
         while (opModeIsActive()) {
 
-            //Start of Auto
-            //Initial Strafe into Foundation Grabbing Zone
-            strafeLeftToDistance(32);
-            //Backing Into Contact With the Foundation
-            reverseToDistance(32);
-            //Locking onto the Foundation
-            resetStartTime();
-            while (getRuntime() < 3) {
-                clampFoundation();
-            }
-            //Bringing the Foundation to the Scoring Zone
-            driveToDistance(32);
-            //Releasing the Foundation
-            resetStartTime();
-            while (getRuntime() < 3) {
-                releaseFoundation();
-            }
-            //Strafing Into the Center Line
-            strafeRightToDistance(40);
-            //Bringing down the Elevator/Intake Mechanism
-            while (getRuntime() < 3) {
-                tiltElevator(1);
-            }
-            //Security Stop All Driving
             stopDriving();
-
         }
     }
-
     //Strafes Right
-    private void strafeRight(double strafeSpeed) {
+    private void strafeRight (double strafeSpeed) {
         leftFrontDrive.setPower(strafeSpeed);
         leftBackDrive.setPower(-strafeSpeed);
         rightFrontDrive.setPower(-strafeSpeed);
         rightBackDrive.setPower(strafeSpeed);
     }
-
     //Strafes Left
     private void strafeLeft(double strafeSpeed) {
         leftFrontDrive.setPower(-strafeSpeed);
@@ -147,7 +121,6 @@ public class AutoBlueEncoder extends LinearOpMode implements Constants {
         rightFrontDrive.setPower(strafeSpeed);
         rightBackDrive.setPower(-strafeSpeed);
     }
-
     //Drives Forward
     private void driveForward(double power) {
         leftFrontDrive.setPower(power);
@@ -155,34 +128,28 @@ public class AutoBlueEncoder extends LinearOpMode implements Constants {
         leftBackDrive.setPower(power);
         rightBackDrive.setPower(power);
     }
-
     //Drives Backward
-    private void driveBackward(double power) {
+    private void driveBackward(double power){
         driveForward(-power);
     }
-
     //Stops all Driving
-    private void stopDriving() {
+    private void stopDriving(){
         driveForward(0);
     }
-
     //Tilts Elevator
     private void tiltElevator(double position) {
         elevatorTilt.setPosition(position);
     }
-
     //Clamps Foundation
     private void clampFoundation() {
         clampA.setPosition(1);
         clampB.setPosition(1);
     }
-
     //Releases Foundation
-    private void releaseFoundation() {
-        clampA.setPosition(0);
+    private void releaseFoundation (){
+        clampA.setPosition (0);
         clampB.setPosition(0);
     }
-
     //Turns right to a set power
     public void turnRight(double power) {
         leftFrontDrive.setPower(power);
@@ -190,65 +157,36 @@ public class AutoBlueEncoder extends LinearOpMode implements Constants {
         leftBackDrive.setPower(power);
         rightBackDrive.setPower(-power);
     }
-
     //Turns left to a set power
-    public void turnLeft(double power) {
+    public void turnLeft(double power){
         turnRight(-power);
     }
-
     //Drives forward to a certain distance in inches
-    public void driveToDistance(double inches) {
+    public void driveToDistance (double inches){
         rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightBackDrive.setTargetPosition((int) (inches / PPR_TO_INCHES)); //This converts inches back into pulses. 1 pulse covers about .046 inches of distance.
+        rightBackDrive.setTargetPosition ((int)(inches / PPR_TO_INCHES)); //This converts inches back into pulses. 1 pulse covers about .046 inches of distance.
         driveForward(.85);
 
-        while (rightBackDrive.isBusy()) {
-            telemetry.addData("Current Encoder Position: ", rightBackDrive.getCurrentPosition());
+        while (rightBackDrive.isBusy())
+        {
+            telemetry.addData("Current Encoder Position: ", rightBackDrive.getCurrentPosition() );
             telemetry.update();
         }
         stopDriving();
     }
-
     //Drives backward to a certain distance in inches
-    public void reverseToDistance(double inches) {
+    public void reverseToDistance (double inches){
         rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightBackDrive.setTargetPosition((int) (inches / PPR_TO_INCHES)); //This converts inches back into pulses. 1 pulse covers about .046 inches of distance.
+        rightBackDrive.setTargetPosition ((int)(inches / PPR_TO_INCHES)); //This converts inches back into pulses. 1 pulse covers about .046 inches of distance.
         driveBackward(.85);
 
-        while (rightBackDrive.isBusy()) {
+        while (rightBackDrive.isBusy())
+        {
             telemetry.addData("Current Encoder Position: ", rightBackDrive.getCurrentPosition());
             telemetry.update();
-        }
-        stopDriving();
-    }
-    public void strafeLeftToDistance(double inches) {
-        rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightBackDrive.setTargetPosition((int) (inches / PPR_TO_INCHES)); //This converts inches back into pulses. 1 pulse covers about .046 inches of distance.
-        strafeLeft(.85);
 
-        while (rightBackDrive.isBusy()) {
-            telemetry.addData("Current Encoder Position: ", rightBackDrive.getCurrentPosition());
-            telemetry.update();
-        }
-        stopDriving();
-    }
-
-    //Drives backward to a certain distance in inches
-    public void strafeRightToDistance(double inches) {
-        rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightBackDrive.setTargetPosition((int) (inches / PPR_TO_INCHES)); //This converts inches back into pulses. 1 pulse covers about .046 inches of distance.
-        strafeRight(.85);
-
-        while (rightBackDrive.isBusy()) {
-            telemetry.addData("Current Encoder Position: ", rightBackDrive.getCurrentPosition());
-            telemetry.update();
         }
         stopDriving();
     }
 }
-
-
-
-
