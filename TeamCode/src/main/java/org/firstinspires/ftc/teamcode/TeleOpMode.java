@@ -9,37 +9,43 @@ import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
+/*
+This is TeleOpMode
+    -When this OpMode is run, the drivers can control the robot via controllers
+    -In it, we assign controls and designate functions
+ */
 
 
 @TeleOp(name="TeleOpMode", group="Iterative Opmode")
 
 public class TeleOpMode extends OpMode implements Constants {
 
-    private ElapsedTime runtime = new ElapsedTime();
-    //Drivetrain Motors
+    //This is where we declare the motors and hardware we use. We declare them here so we can use them later
+    private ElapsedTime runtime = new ElapsedTime(); //This is the time that has gone by so far in the match. We can use this to say: "Do this at this time in the match"
+    //Drivetrain Motors - These are the motors used for driving the robot
     private DcMotor leftFrontDrive = null;
     private DcMotor rightFrontDrive = null;
     private DcMotor leftBackDrive = null;
     private DcMotor rightBackDrive = null;
 
     //Gamepiece Motors
-    private DcMotor stretch = null;
-    private DcMotor elevator =  null;
-    private DcMotor intakeA = null;
-    private DcMotor intakeB = null;
+    private DcMotor stretch = null; //This is responsible for opening and closing the intake mechanism
+    private DcMotor elevator =  null; //This controls the elevator up and down motion, yes
+    private DcMotor intakeA = null; //This is the left set of intake wheels
+    private DcMotor intakeB = null; //This is the right set of intake wheels
 
-    //servos
-    private Servo elevatorTilt = null;
-    private Servo clampA = null;
-    private Servo clampB = null;
+    //Servos
+    private Servo elevatorTilt = null; //This is called a LINEAR ACTUATOR. It's essentially a motor that can only push and pull forward and backward. We use it to push the elevator/INTAKE mechanism up and down
+    private Servo clampA = null; //This is the left servo in the back of the bot. It's used for clamping onto the foundation
+    private Servo clampB = null; //This is the right servo in the back of the bot. It's used for clamping onto the foundation
 
-    //sensors
-    private TouchSensor lowerLimit = null;
+    //Sensors
+    private TouchSensor lowerLimit = null; //When it's true, the elevator has hit it. We programmed it to stop the elevator when it hits this so it doesn't go too low and break
 
     @Override
     public void init() {
         //Initialization- Motors
-        leftFrontDrive = hardwareMap.get(DcMotor.class, "leftFrontDrive");
+        leftFrontDrive = hardwareMap.get(DcMotor.class, "leftFrontDrive"); //The things in quotes are what we named it on the phone configuration
         rightFrontDrive = hardwareMap.get(DcMotor.class, "rightFrontDrive");
         leftBackDrive = hardwareMap.get(DcMotor.class, "leftBackDrive");
         rightBackDrive = hardwareMap.get(DcMotor.class, "rightBackDrive");
@@ -85,7 +91,7 @@ public class TeleOpMode extends OpMode implements Constants {
     }
 
     @Override
-    public void loop() {
+    public void loop() { //Everything in this bracket loops in the TeleOp period
         //Driving
         double rightOutput;
         double leftOutput;
@@ -94,7 +100,7 @@ public class TeleOpMode extends OpMode implements Constants {
         double turn = -gamepad1.right_stick_x * .5;
 
         //Clamping Foundation
-        if (gamepad1.x) {
+        if (gamepad1.x) { //If the X button on gamepad 1 (driver) is hit, the platform is clamped...)
             clampPlatform();
         }
         if (gamepad1.y) {
@@ -137,6 +143,12 @@ public class TeleOpMode extends OpMode implements Constants {
             intakeA.setPower(0);
             intakeB.setPower(0);
         }
+        if (gamepad2.x) {
+            openIntake();
+        }
+        if (gamepad2.y) {
+            closeIntake();
+        }
 
         //Elevator
         if (lowerLimit.isPressed()) {
@@ -175,6 +187,12 @@ public class TeleOpMode extends OpMode implements Constants {
         leftBackDrive.setPower(power);
         rightBackDrive.setPower(power);
     }
+    private void openIntake() {
+        stretch.setPower(.9);
+    }
+    private void closeIntake() {
+        stretch.setPower(-.9);
+    }
 
 
     private void moveElevator(double power) {
@@ -193,6 +211,5 @@ public class TeleOpMode extends OpMode implements Constants {
     private void releasePlatform() {
         clampA.setPosition(0);
         clampB.setPosition(0);
-    }
-
-}
+    }//I'll go over the functions (orange) in the auto classes but this is pretty much it for TeleOP
+} //We're gonna go to auto now bois Red or Blue first?

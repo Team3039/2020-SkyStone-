@@ -1,192 +1,98 @@
 package org.firstinspires.ftc.teamcode;
 
-import android.text.method.Touch;
-
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.TouchSensor;
-/*
-//////////////////////////////
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
-    /    /          /    /
-    /    /          /    /
-    /    /          /    /
-    /    /          /    /
+import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
+import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
+import org.firstinspires.ftc.robotcore.external.navigation.VuMarkInstanceId;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
+@Autonomous(name = "Concept: NullOp", group = "Concept")
+@Disabled
+public class AutoBlueVision extends OpMode {
 
-    \\\\\\\\\\\\\\\\\\\\\\
+    private ElapsedTime runtime = new ElapsedTime();
 
-        /           /
-        /           /
-        /           /
-        /           /
-//////////////////////////////
- */
-/*
-    Conditions for this auto to work optimally:
-        -We start on the LOADING ZONE (The side with the blocks
-        -The encoders are plugged in, wired correctly, working correctly, and coded correctly.
-        -We start on the BLUE side of the field (The side of the field that has the blue part of the central gate)
-    Notes:
-        -It is always preferable to use this auto but it has a severe lack of testing
-    Priorities:
-        -Get the phone cam working first, then the webcam
-        -Figure out how to do this from the source code
- */
+    //vuforia initialization
+    VuforiaLocalizer vuforia;
 
-@Autonomous
-public class AutoBlueVision extends LinearOpMode implements Constants {
-
-    //Drivetrain Motors
-    private DcMotor leftFrontDrive = null;
-    private DcMotor rightFrontDrive = null;
-    private DcMotor leftBackDrive = null;
-    private DcMotor rightBackDrive = null;
-
-    //Gamepiece Motors
-    private DcMotor stretch = null; //Open & Close Intake
-    private DcMotor elevator =  null; //Move the elevator up and down (Tied to gamepad2 right joystick)
-    private DcMotor intakeA = null; //Left Intake side (Spins those wheels)
-    private DcMotor intakeB = null; //Right Intake side (Spins those wheels)
-
-    //Servos
-    private Servo elevatorTilt = null; //LINEAR ACTUATOR (Brings elevator/intake mechanism down)
-    private Servo clampA = null; //Left Foundation Servo (Clamps & Releases foundation)
-    private Servo clampB = null; //Right Foundation Servo (Clamps & Releases Foundation)
-
-    //Sensors
-    private TouchSensor lowerLimit = null; //Prevents elevator from going too far down
+    VuforiaTrackables relicTrackables;
+    VuforiaTrackable relicTemplate;
 
     @Override
-    public void runOpMode () throws InterruptedException {
+    public void init() {
+
         telemetry.addData("Status", "Initialized");
-        telemetry.update();
 
-        //Initialization- Motors
-        leftFrontDrive = hardwareMap.get(DcMotor.class, "leftFrontDrive");
-        rightFrontDrive = hardwareMap.get(DcMotor.class, "rightFrontDrive");
-        leftBackDrive = hardwareMap.get(DcMotor.class, "leftBackDrive");
-        rightBackDrive = hardwareMap.get(DcMotor.class, "rightBackDrive");
-        stretch = hardwareMap.get(DcMotor.class, "stretch");
-        elevator = hardwareMap.get(DcMotor.class, "elevator");
-        intakeA = hardwareMap.get(DcMotor.class, "intakeA");
-        intakeB = hardwareMap.get(DcMotor.class, "intakeB");
+        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
 
-        //Initialization - Servos
-        elevatorTilt = hardwareMap.get(Servo.class , "elevatorTilt");
-        clampA = hardwareMap.get(Servo.class , "clampA");
-        clampB = hardwareMap.get(Servo.class , "clampB");
+        parameters.vuforiaLicenseKey = "ATsODcD/////AAAAAVw2lR...d45oGpdljdOh5LuFB9nDNfckoxb8COxKSFX";
 
-        //Initialization - Sensors
-        lowerLimit = hardwareMap.get(TouchSensor.class, "lowerLimit");
+        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.FRONT;
+        this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
 
-        //Setting Initial Motor Directions
-        leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
-        rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
-        leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
-        rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
+        relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
+        relicTemplate = relicTrackables.get(0);
+        relicTemplate.setName("relicVuMarkTemplate"); // can help in debugging; otherwise not necessary
 
-        //Motor/Encoder Settings
-        rightFrontDrive.setMode((DcMotor.RunMode.RUN_WITHOUT_ENCODER));
-        leftBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        leftFrontDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    }
 
-        telemetry.addData("Mode", "waiting");
-        telemetry.update();
+    @Override
+    public void start() {
 
-        //Operator presses START here. Everything below waitForStart(); will run.
-        waitForStart();
+        runtime.reset();
 
-        telemetry.addData("Mode", "running");
-        telemetry.update();
-        while (opModeIsActive()) {
+        relicTrackables.activate();
 
-            stopDriving();
+    }
+
+    @Override
+    public void loop() {
+
+        RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
+        if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
+
+            OpenGLMatrix pose = ((VuforiaTrackableDefaultListener) relicTemplate.getListener()).getPose();
+            if (vuMark == RelicRecoveryVuMark.RIGHT)
+                telemetry.addData("VuMark", "Right");
+            else if (vuMark == RelicRecoveryVuMark.CENTER)
+                telemetry.addData("VuMark", "Center");
+            else if (vuMark == RelicRecoveryVuMark.LEFT)
+                telemetry.addData("VuMark", "Left");
+            else if (vuMark == RelicRecoveryVuMark.UNKNOWN)
+                telemetry.addData("VuMark", "Unknown");
+
+            if (pose != null) {
+                VectorF trans = pose.getTranslation();
+                Orientation rot = Orientation.getOrientation(pose, AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES);
+
+                // Extract the X, Y, and Z components of the offset of the target relative to the robot
+                double tX = trans.get(0);
+                double tY = trans.get(1);
+                double tZ = trans.get(2);
+
+                // Extract the rotational components of the target relative to the robot
+                double rX = rot.firstAngle;
+                double rY = rot.secondAngle;
+                double rZ = rot.thirdAngle;
+            }
+        } else {
+            telemetry.addData("VuMark", "not visible");
         }
-    }
-    //Strafes Right
-    private void strafeRight (double strafeSpeed) {
-        leftFrontDrive.setPower(strafeSpeed);
-        leftBackDrive.setPower(-strafeSpeed);
-        rightFrontDrive.setPower(-strafeSpeed);
-        rightBackDrive.setPower(strafeSpeed);
-    }
-    //Strafes Left
-    private void strafeLeft(double strafeSpeed) {
-        leftFrontDrive.setPower(-strafeSpeed);
-        leftBackDrive.setPower(strafeSpeed);
-        rightFrontDrive.setPower(strafeSpeed);
-        rightBackDrive.setPower(-strafeSpeed);
-    }
-    //Drives Forward
-    private void driveForward(double power) {
-        leftFrontDrive.setPower(power);
-        rightFrontDrive.setPower(power);
-        leftBackDrive.setPower(power);
-        rightBackDrive.setPower(power);
-    }
-    //Drives Backward
-    private void driveBackward(double power){
-        driveForward(-power);
-    }
-    //Stops all Driving
-    private void stopDriving(){
-        driveForward(0);
-    }
-    //Tilts Elevator
-    private void tiltElevator(double position) {
-        elevatorTilt.setPosition(position);
-    }
-    //Clamps Foundation
-    private void clampFoundation() {
-        clampA.setPosition(1);
-        clampB.setPosition(1);
-    }
-    //Releases Foundation
-    private void releaseFoundation (){
-        clampA.setPosition (0);
-        clampB.setPosition(0);
-    }
-    //Turns right to a set power
-    public void turnRight(double power) {
-        leftFrontDrive.setPower(power);
-        rightFrontDrive.setPower(-power);
-        leftBackDrive.setPower(power);
-        rightBackDrive.setPower(-power);
-    }
-    //Turns left to a set power
-    public void turnLeft(double power){
-        turnRight(-power);
-    }
-    //Drives forward to a certain distance in inches
-    public void driveToDistance (double inches){
-        rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightBackDrive.setTargetPosition ((int)(inches / PPR_TO_INCHES)); //This converts inches back into pulses. 1 pulse covers about .046 inches of distance.
-        driveForward(.85);
 
-        while (rightBackDrive.isBusy())
-        {
-            telemetry.addData("Current Encoder Position: ", rightBackDrive.getCurrentPosition() );
-            telemetry.update();
-        }
-        stopDriving();
-    }
-    //Drives backward to a certain distance in inches
-    public void reverseToDistance (double inches){
-        rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightBackDrive.setTargetPosition ((int)(inches / PPR_TO_INCHES)); //This converts inches back into pulses. 1 pulse covers about .046 inches of distance.
-        driveBackward(.85);
-
-        while (rightBackDrive.isBusy())
-        {
-            telemetry.addData("Current Encoder Position: ", rightBackDrive.getCurrentPosition());
-            telemetry.update();
-
-        }
-        stopDriving();
+        telemetry.update();
     }
 }

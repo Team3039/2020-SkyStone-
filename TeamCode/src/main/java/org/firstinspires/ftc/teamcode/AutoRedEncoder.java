@@ -8,20 +8,22 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 /*
+FIELD MAP:
+
 //////////////////////////////
 
+    //////          //////
     /    /          /    /
     /    /          /    /
-    /    /          /    /
-    /    /          /    /
+    //////          //////
 
 
     \\\\\\\\\\\\\\\\\\\\\\
 
-        /           /
-        /           /
-        /           /
-        /           /
+        /\          /\
+        /\          /\
+        /\          /\
+        /\          /\
 //////////////////////////////
  */
 /*
@@ -92,7 +94,7 @@ public class AutoRedEncoder extends LinearOpMode implements Constants {
         rightFrontDrive.setMode((DcMotor.RunMode.RUN_WITHOUT_ENCODER));
         leftBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         leftFrontDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         telemetry.addData("Mode", "waiting");
         telemetry.update();
@@ -106,30 +108,36 @@ public class AutoRedEncoder extends LinearOpMode implements Constants {
 
             //Start of Auto
             //Initial Strafe into Foundation Grabbing Zone
-            strafeLeftToDistance(32);
+            resetStartTime();
+            while (getRuntime() < 2) {
+                strafeLeft(.65);
+            }
             //Backing Into Contact With the Foundation
             reverseToDistance(32);
             //Locking onto the Foundation
             resetStartTime();
-            while (getRuntime() < 3) {
+            while (getRuntime() < 1) {
                 clampFoundation();
             }
             //Bringing the Foundation to the Scoring Zone
             driveToDistance(32);
             //Releasing the Foundation
             resetStartTime();
-            while (getRuntime() < 3) {
+            while (getRuntime() < 1) {
                 releaseFoundation();
             }
             //Strafing Into the Center Line
-            strafeRightToDistance(40);
+            resetStartTime();
+            while (getRuntime() < 3) {
+                strafeRight(.85);
+            }
+            reverseToDistance(15); //Backing up for the elevator tilt
             //Bringing down the Elevator/Intake Mechanism
             while (getRuntime() < 3) {
                 tiltElevator(1);
             }
             //Security Stop All Driving
             stopDriving();
-
         }
     }
     //Strafes Right
@@ -189,8 +197,8 @@ public class AutoRedEncoder extends LinearOpMode implements Constants {
     //Drives forward to a certain distance in inches
     public void driveToDistance (double inches){
         rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightBackDrive.setTargetPosition ((int)(inches / PPR_TO_INCHES)); //This converts inches back into pulses. 1 pulse covers about .046 inches of distance.
+        rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         driveForward(.85);
 
         while (rightBackDrive.isBusy())
@@ -204,6 +212,7 @@ public class AutoRedEncoder extends LinearOpMode implements Constants {
     public void reverseToDistance (double inches){
         rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightBackDrive.setTargetPosition ((int)(inches / PPR_TO_INCHES)); //This converts inches back into pulses. 1 pulse covers about .046 inches of distance.
+        rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         driveBackward(.85);
 
         while (rightBackDrive.isBusy())
@@ -213,31 +222,33 @@ public class AutoRedEncoder extends LinearOpMode implements Constants {
         }
         stopDriving();
     }
-    public void strafeLeftToDistance(double inches) {
-        rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightBackDrive.setTargetPosition((int) (inches / PPR_TO_INCHES)); //This converts inches back into pulses. 1 pulse covers about .046 inches of distance.
-        strafeLeft(.85);
+    //Strafes Left to a certain distance in inches
+//    public void strafeLeftToDistance(double inches) {
+//        rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        rightBackDrive.setTargetPosition((int) (inches / PPR_TO_INCHES)); //This converts inches back into pulses. 1 pulse covers about .046 inches of distance.
+//        rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        strafeLeft(.85);
+//
+//        while (rightBackDrive.isBusy()) {
+//            telemetry.addData("Current Encoder Position: ", rightBackDrive.getCurrentPosition());
+//            telemetry.update();
+//        }
+//        stopDriving();
+//    }
 
-        while (rightBackDrive.isBusy()) {
-            telemetry.addData("Current Encoder Position: ", rightBackDrive.getCurrentPosition());
-            telemetry.update();
-        }
-        stopDriving();
-    }
-
-    //Drives backward to a certain distance in inches
-    public void strafeRightToDistance(double inches) {
-        rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightBackDrive.setTargetPosition((int) (inches / PPR_TO_INCHES)); //This converts inches back into pulses. 1 pulse covers about .046 inches of distance.
-        strafeRight(.85);
-
-        while (rightBackDrive.isBusy()) {
-            telemetry.addData("Current Encoder Position: ", rightBackDrive.getCurrentPosition());
-            telemetry.update();
-        }
-        stopDriving();
-    }
+    //Strafes Right to a certain distance in inches
+//    public void strafeRightToDistance(double inches) {
+//        rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        rightBackDrive.setTargetPosition((int) (inches / PPR_TO_INCHES)); //This converts inches back into pulses. 1 pulse covers about .046 inches of distance.
+//        rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        strafeRight(.85);
+//
+//        while (rightBackDrive.isBusy()) {
+//            telemetry.addData("Current Encoder Position: ", rightBackDrive.getCurrentPosition());
+//            telemetry.update();
+//        }
+//        stopDriving();
+//    }
 }
 
 

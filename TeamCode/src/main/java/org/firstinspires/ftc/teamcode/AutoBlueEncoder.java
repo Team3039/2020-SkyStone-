@@ -6,23 +6,26 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.TouchSensor;
+import com.qualcomm.robotcore.hardware.TouchSensor; //This is where we import the classes we need
 /*
+FIELD MAP:
+
 //////////////////////////////
 
+    //////          //////
+    /    /          /    /  ----Foundations
     /    /          /    /
-    /    /          /    /
-    /    /          /    /
-    /    /          /    /
+    //////          //////
 
 
-    \\\\\\\\\\\\\\\\\\\\\\
+    \\\\\\\\\\\\\\\\\\\\\\  ------Center Gate
 
-        /           /
-        /           /
-        /           /
-        /           /
+        /\          /\
+        /\          /\
+        /\          /\  ---------Blocks
+        /\          /\
 //////////////////////////////
+*/
 /*
     Conditions for this auto to work optimally:
         -We start on the BUILDING ZONE (The side with the foundations (the big plate things that we need to drag)
@@ -33,6 +36,12 @@ import com.qualcomm.robotcore.hardware.TouchSensor;
     Priorities:
         -Test, Test, Test!
         -Get the encoder code working
+
+What do you need to know?:
+    -Encoders are put on wheels (motors) and measure the distance they've traveled through encoder ticks.
+    -This is super useful because we can convert these to inches and tell the motor to go to this distance
+    -If we didn't have this, we would just tell it to run for a certain time. This is extremely inaccurate and inconsistent.
+    -Unfortunately, our encoders may not always work so we have backup autos in case they ever fail
  */
 
 @Autonomous
@@ -91,7 +100,7 @@ public class AutoBlueEncoder extends LinearOpMode implements Constants {
         rightFrontDrive.setMode((DcMotor.RunMode.RUN_WITHOUT_ENCODER));
         leftBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         leftFrontDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         telemetry.addData("Mode", "waiting");
         telemetry.update();
@@ -105,7 +114,10 @@ public class AutoBlueEncoder extends LinearOpMode implements Constants {
 
             //Start of Auto
             //Initial Strafe into Foundation Grabbing Zone
-            strafeLeftToDistance(32);
+            resetStartTime();
+            while (getRuntime() < 3) {
+                strafeRight(.85);
+            }
             //Backing Into Contact With the Foundation
             reverseToDistance(32);
             //Locking onto the Foundation
@@ -121,7 +133,11 @@ public class AutoBlueEncoder extends LinearOpMode implements Constants {
                 releaseFoundation();
             }
             //Strafing Into the Center Line
-            strafeRightToDistance(40);
+            resetStartTime();
+            while (getRuntime() < 3) {
+                strafeLeft(.85);
+            }
+            reverseToDistance(15); //Backing up for the elevator tilt
             //Bringing down the Elevator/Intake Mechanism
             while (getRuntime() < 3) {
                 tiltElevator(1);
@@ -131,7 +147,7 @@ public class AutoBlueEncoder extends LinearOpMode implements Constants {
 
         }
     }
-
+    //These are our functions (methods)
     //Strafes Right
     private void strafeRight(double strafeSpeed) {
         leftFrontDrive.setPower(strafeSpeed);
@@ -146,7 +162,7 @@ public class AutoBlueEncoder extends LinearOpMode implements Constants {
         leftBackDrive.setPower(strafeSpeed);
         rightFrontDrive.setPower(strafeSpeed);
         rightBackDrive.setPower(-strafeSpeed);
-    }
+    } //When the wheels spin inversely, a perpendicular motion is produced. meaning they go side to side
 
     //Drives Forward
     private void driveForward(double power) {
@@ -167,12 +183,12 @@ public class AutoBlueEncoder extends LinearOpMode implements Constants {
     }
 
     //Tilts Elevator
-    private void tiltElevator(double position) {
+    private void tiltElevator(double position) { //In this case, the argument is position, not power
         elevatorTilt.setPosition(position);
     }
 
     //Clamps Foundation
-    private void clampFoundation() {
+    private void clampFoundation() { //
         clampA.setPosition(1);
         clampB.setPosition(1);
     }
@@ -199,8 +215,8 @@ public class AutoBlueEncoder extends LinearOpMode implements Constants {
     //Drives forward to a certain distance in inches
     public void driveToDistance(double inches) {
         rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightBackDrive.setTargetPosition((int) (inches / PPR_TO_INCHES)); //This converts inches back into pulses. 1 pulse covers about .046 inches of distance.
+        rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         driveForward(.85);
 
         while (rightBackDrive.isBusy()) {
@@ -214,6 +230,7 @@ public class AutoBlueEncoder extends LinearOpMode implements Constants {
     public void reverseToDistance(double inches) {
         rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightBackDrive.setTargetPosition((int) (inches / PPR_TO_INCHES)); //This converts inches back into pulses. 1 pulse covers about .046 inches of distance.
+        rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         driveBackward(.85);
 
         while (rightBackDrive.isBusy()) {
@@ -222,6 +239,7 @@ public class AutoBlueEncoder extends LinearOpMode implements Constants {
         }
         stopDriving();
     }
+    //Strafes Left to a certain distance in inches
     public void strafeLeftToDistance(double inches) {
         rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -235,10 +253,11 @@ public class AutoBlueEncoder extends LinearOpMode implements Constants {
         stopDriving();
     }
 
-    //Drives backward to a certain distance in inches
+    //Strafes Right to a certain distance in inches
     public void strafeRightToDistance(double inches) {
         rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightBackDrive.setTargetPosition((int) (inches / PPR_TO_INCHES)); //This converts inches back into pulses. 1 pulse covers about .046 inches of distance.
+        rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         strafeRight(.85);
 
         while (rightBackDrive.isBusy()) {
