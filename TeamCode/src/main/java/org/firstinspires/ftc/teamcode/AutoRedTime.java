@@ -125,7 +125,7 @@ public class AutoRedTime extends LinearOpMode implements Constants {
             }
             //Strafing Into the Center Line
             while (getRuntime() < 14.5 && getRuntime() > 12.5) {
-                strafeLeft(.85);
+               strafeLeft(.85);
             }
             //Bringing down the Elevator/Intake Mechanism
             while (getRuntime() < 17.5 && getRuntime() > 14.5) {

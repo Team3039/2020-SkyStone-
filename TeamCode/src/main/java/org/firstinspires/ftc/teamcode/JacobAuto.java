@@ -72,7 +72,7 @@ public class JacobAuto extends LinearOpMode implements Constants {
         rightFrontDrive.setMode((DcMotor.RunMode.RUN_WITHOUT_ENCODER));
         leftBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         leftFrontDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         telemetry.addData("Mode", "waiting");
         telemetry.update();
