@@ -99,6 +99,9 @@ public class TeleOpMode extends OpMode implements Constants {
         double drive = gamepad1.left_stick_y * .9;
         double turn = -gamepad1.right_stick_x * .5;
 
+        telemetry.addData("Time Elapsed", getRuntime() );
+        telemetry.update();
+
         //Clamping Foundation
         if (gamepad1.x) { //If the X button on gamepad 1 (driver) is hit, the platform is clamped...)
             clampPlatform();
@@ -148,7 +151,7 @@ public class TeleOpMode extends OpMode implements Constants {
         }
         if (gamepad2.y) {
             closeIntake();
-        }
+        } 
 
         //Elevator
         if (lowerLimit.isPressed()) {

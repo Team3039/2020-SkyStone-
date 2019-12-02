@@ -106,34 +106,34 @@ public class AutoRedEncoder extends LinearOpMode implements Constants {
         telemetry.update();
         while (opModeIsActive()) {
 
+              while (getRuntime() < 4) {
+                  driveForward(.9);
+              }
+              stopDriving();
             //Start of Auto
             //Initial Strafe into Foundation Grabbing Zone
-            resetStartTime();
-            while (getRuntime() < 2) {
+            while (getRuntime() <= 2) {
                 strafeLeft(.65);
             }
             //Backing Into Contact With the Foundation
             reverseToDistance(32);
             //Locking onto the Foundation
-            resetStartTime();
-            while (getRuntime() < 1) {
+            while (getRuntime() < 3 && getRuntime() > 2) {
                 clampFoundation();
             }
             //Bringing the Foundation to the Scoring Zone
             driveToDistance(32);
             //Releasing the Foundation
-            resetStartTime();
-            while (getRuntime() < 1) {
+            while (getRuntime() < 4 && getRuntime() > 3) {
                 releaseFoundation();
             }
             //Strafing Into the Center Line
-            resetStartTime();
-            while (getRuntime() < 3) {
+            while (getRuntime() < 7 && getRuntime() > 4) {
                 strafeRight(.85);
             }
             reverseToDistance(15); //Backing up for the elevator tilt
             //Bringing down the Elevator/Intake Mechanism
-            while (getRuntime() < 3) {
+            while (getRuntime() < 10 && getRuntime() > 7) {
                 tiltElevator(1);
             }
             //Security Stop All Driving
@@ -141,7 +141,7 @@ public class AutoRedEncoder extends LinearOpMode implements Constants {
         }
     }
     //Strafes Right
-    private void strafeRight (double strafeSpeed) {
+    public void strafeRight (double strafeSpeed) {
         leftFrontDrive.setPower(strafeSpeed);
         leftBackDrive.setPower(-strafeSpeed);
         rightFrontDrive.setPower(-strafeSpeed);

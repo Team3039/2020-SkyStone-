@@ -104,48 +104,40 @@ public class AutoRedTime extends LinearOpMode implements Constants {
 
         //Start of Auto
         //Initial Strafe Into Foundation Grabbing Zone
-        while (opModeIsActive()) {
-            resetStartTime();
             while (getRuntime() < 1) {
                 strafeRight(.8);
             }
             //Backing Into Contact With the Foundation
-            resetStartTime();
-            while (getRuntime() < 2.5) {
+            while (getRuntime() < 3.5 && getRuntime() > 1) {
                 driveBackward(.85);
             }
             //Locking onto the Foundation
-            resetStartTime();
-            while (getRuntime() < 3) {
+            while (getRuntime() < 6.5 && getRuntime() > 3.5) {
                 clampFoundation();
             }
             //Bringing the Foundation to the Scoring Zone
-            resetStartTime();
-            while (getRuntime() < 3) {
+            while (getRuntime() < 9.5 && getRuntime() > 6.5) {
                 driveForward(.85);
             }
             //Releasing the Foundation
-            resetStartTime();
-            while (getRuntime() < 3) {
+            while (getRuntime() < 12.5 && getRuntime() > 9.5) {
                 releaseFoundation();
             }
             //Strafing Into the Center Line
-            resetStartTime();
-            while (getRuntime() < 2) {
+            while (getRuntime() < 14.5 && getRuntime() > 12.5) {
                 strafeLeft(.85);
             }
             //Bringing down the Elevator/Intake Mechanism
-            resetStartTime();
-            while (getRuntime() < 3) {
+            while (getRuntime() < 17.5 && getRuntime() > 14.5) {
                 tiltElevator(1);
             }
             //Security Stop All Driving
             stopDriving();
             //End of Auto
         }
-    }
+
     //Strafes Right
-    private void strafeRight (double strafeSpeed) {
+    public void strafeRight (double strafeSpeed) {
         leftFrontDrive.setPower(strafeSpeed);
         leftBackDrive.setPower(-strafeSpeed);
         rightFrontDrive.setPower(-strafeSpeed);
